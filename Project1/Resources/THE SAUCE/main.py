@@ -19,7 +19,6 @@ if __name__ == "__main__":
     sim.run()
     sim.generateReport()
 
-'''
 
 # If script is not working comment out above and run the code below
     
@@ -75,5 +74,3 @@ if __name__ == "__main__":
         else:
             print("Invalid input.")
         scheduler += 1
-
-'''
