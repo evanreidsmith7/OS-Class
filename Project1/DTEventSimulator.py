@@ -26,6 +26,7 @@ class Process:
       self.disk_service_time = 0
       self.cpu_done = False
       self.disk_done = False
+      self.disk_probability = 0.0
 
 ###################################################################event#####################################
 class Event:
@@ -83,7 +84,21 @@ class Simulator:
 
 ##########################################################handleArrival#
    def handleArrival(self, event):
-      pass
+      if self.cpu.busy is False and self.disk_probability <= 0.6:
+         # cpu isnt busy and the process is not going to disk
+         # start the process on the cpu (cpu.busy true) 
+         self.cpu.busy = True
+         # change the event to a depart because it will leave the cpu
+         event.type = "DEP"
+         event.process.end_time = self.cpu.clock + event.process.cpu_service_time
+         # update the event time to the end time of the process
+         event.time = event.process.end_time
+
+         # add the event back to the event queue
+         self.event_queue.append(event)
+      else:
+         print("Something is wrong with the cpu")
+
 
 ############################################################handleDisk#
    def handleDisk(self, event):
@@ -102,6 +117,7 @@ class Simulator:
       process.disk_service_time = math.log(1 - float(random.uniform(0, 1))) / (-(1/self.average_Disk_service_time))
       process.end_time = process.arrival_time + process.cpu_service_time
       process.start_time = 0
+      process.disk_probability = random.uniform(0, 1)
 
       return process
    
