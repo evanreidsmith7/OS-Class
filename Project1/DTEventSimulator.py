@@ -66,7 +66,29 @@ class Simulator:
          # take the next event from the event queue
          event = self.event_queue.pop(0)
 
+         # set clock to the occuring event time because time hops around
+         self.cpu.clock = event.time
 
+         # check the type of event
+         # cpu arrival: ARR, disk arival: DISK, departure: DEP
+         if event.type == "ARR":
+            self.handle_arrival(event)
+         elif event.type == "DISK":
+            self.handle_disk(event)
+         elif event.type == "DEP":
+            self.handle_departure(event)
+         else:
+            print("Invalid event type")
+
+
+def handle_arrival(self, event):
+   pass
+
+def handle_disk(self, event):
+   pass
+
+def handle_departure(self, event):
+   pass
 
 
    def generateProcess(self):
