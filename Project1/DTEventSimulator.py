@@ -51,6 +51,7 @@ class Simulator:
       self.sum_num_of_proc_in_readyQ = 0
       self.sum_num_of_proc_in_diskQ = 0
 
+#################################################first_come_first_serve#
    def first_come_first_serve(self):
       # Implement the FCFS 
       print("Running the scheduler...")
@@ -72,25 +73,27 @@ class Simulator:
          # check the type of event
          # cpu arrival: ARR, disk arival: DISK, departure: DEP
          if event.type == "ARR":
-            self.handle_arrival(event)
+            self.handleArrival(event)
          elif event.type == "DISK":
-            self.handle_disk(event)
+            self.handleDisk(event)
          elif event.type == "DEP":
-            self.handle_departure(event)
+            self.handleDeparture(event)
          else:
             print("Invalid event type")
 
+##########################################################handleArrival#
+   def handleArrival(self, event):
+      pass
 
-def handle_arrival(self, event):
-   pass
+############################################################handleDisk#
+   def handleDisk(self, event):
+      pass
 
-def handle_disk(self, event):
-   pass
+#######################################################handleDeparture#
+   def handleDeparture(self, event):
+      pass
 
-def handle_departure(self, event):
-   pass
-
-
+#######################################################generateProcess#
    def generateProcess(self):
       process = Process()
 
@@ -101,7 +104,8 @@ def handle_departure(self, event):
       process.start_time = 0
 
       return process
-      
+   
+#######################################################generateEvent#
    def generateEvent(self, time, type, process):
       event = Event()
       event.time = time
@@ -109,8 +113,9 @@ def handle_departure(self, event):
       event.process = process
 
       return event
-      
 
+###############################################################run#
    def run(self):
       # start fcfs scheduler
       self.first_come_first_serve()
+###################################################################simulator#####################################
