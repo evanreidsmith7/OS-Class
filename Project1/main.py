@@ -16,7 +16,7 @@ if __name__ == "__main__":
    end_condition = 10000
 
    # Initialize the simulator with the provided command-line arguments
-   sim = Simulator(average_arrival_rate, average_CPU_service_time, average_Disk_service_time, end_condition)
+   sim = Simulator(average_arrival_rate, average_CPU_service_time, average_Disk_service_time)
 
    # Run the simulation
    sim.run()
