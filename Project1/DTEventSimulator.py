@@ -43,7 +43,7 @@ class Simulator:
       self.average_arrival_rate = average_arrival_rate
       self.average_CPU_service_time = average_CPU_service_time
       self.average_Disk_service_time = average_Disk_service_time
-      self.end_condition = 10
+      self.end_condition = 10000
 
       self.ready_queue = []
       self.disk_queue = []
@@ -98,11 +98,14 @@ class Simulator:
          
          print(f"\n\nPost-event processing: Simulation clock: {self.cpu.clock}, Ready queue size: {len(self.ready_queue)}, Disk queue size: {len(self.disk_queue)}")
       
-      print("Simulation complete. Final metrics:")
-      print(f"Total completed processes: {self.number_completed_processes}")
-      print(f"Average turnaround time: {self.total_turnaround_time / self.number_completed_processes if self.number_completed_processes > 0 else 0}")
-      print(f"CPU utilization: {(self.total_cpu_service_times / self.cpu.clock) * 100 if self.cpu.clock > 0 else 0}%")
-      print(f"Disk utilization: {(self.total_disk_service_times / self.cpu.clock) * 100 if self.cpu.clock > 0 else 0}%")
+      avg_turn_around_time = round((self.total_turnaround_time / self.end_condition), 3)
+      throughput = round((self.end_condition / self.cpu.clock), 3)
+      cpu_utilization = round(self.total_cpu_service_times / self.cpu.clock, 3)
+      disk_utilization = round(self.total_disk_service_times / self.cpu.clock, 3)
+      avg_num_processes_in_readyQ = round(self.sum_num_of_proc_in_readyQ / self.end_condition, 3)
+      avg_num_processes_in_diskQ = round(self.sum_num_of_proc_in_diskQ / self.end_condition, 3)
+
+      self.report(avg_turn_around_time, throughput, cpu_utilization, disk_utilization, avg_num_processes_in_readyQ, avg_num_processes_in_diskQ)
 
 ##########################################################handleArrival#
    def handleArrival(self, event):
@@ -235,4 +238,16 @@ class Simulator:
    def run(self):
       # start fcfs scheduler
       self.first_come_first_serve()
+
+##############################################################report#
+   def report(self, avg_turn_around_time, throughput, cpu_utilization, disk_utilization, avg_num_processes_in_readyQ, avg_num_processes_in_diskQ):
+      print(f"{'Metrics Report':^40}")
+      print(f"{'='*40}")
+      print(f"{'Avg. Turnaround Time:':<30}{avg_turn_around_time:>10.2f} seconds")
+      print(f"{'Throughput:':<30}{throughput:>10.2f} processes/unit time")
+      print(f"{'CPU Utilization:':<30}{cpu_utilization:>10.2f}%")
+      print(f"{'Disk Utilization:':<30}{disk_utilization:>10.2f}%")
+      print(f"{'Avg. Processes in Ready Queue:':<30}{avg_num_processes_in_readyQ:>10.2f}")
+      print(f"{'Avg. Processes in Disk Queue:':<30}{avg_num_processes_in_diskQ:>10.2f}")
+      print(f"{'='*40}")
 ###################################################################simulator#####################################
