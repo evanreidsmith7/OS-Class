@@ -23,7 +23,6 @@ class Process:
       self.disk_service_time = 0
       self.cpu_done = False
       self.disk_done = False
-      self.disk_probability = 0.0
 
       self.pid = Process.last_pid + 1  # Assign a unique PID to the process
       Process.last_pid = self.pid  # Update the last assigned PID
@@ -49,6 +48,7 @@ class Simulator:
       self.disk_queue = []
       self.event_queue = []
 
+      self.num_disk_processes = 0
       self.number_completed_processes = 0
       self.total_turnaround_time = 0
       self.total_cpu_service_times = 0
@@ -98,12 +98,12 @@ class Simulator:
          
          print(f"\n\nPost-event processing: Simulation clock: {self.cpu.clock}, Ready queue size: {len(self.ready_queue)}, Disk queue size: {len(self.disk_queue)}")
       
-      avg_turn_around_time = round((self.total_turnaround_time / self.end_condition), 3)
-      throughput = round((self.end_condition / self.cpu.clock), 3)
-      cpu_utilization = round(self.total_cpu_service_times / self.cpu.clock, 3)
-      disk_utilization = round(self.total_disk_service_times / self.cpu.clock, 3)
-      avg_num_processes_in_readyQ = round(self.sum_num_of_proc_in_readyQ / self.end_condition, 3)
-      avg_num_processes_in_diskQ = round(self.sum_num_of_proc_in_diskQ / self.end_condition, 3)
+      avg_turn_around_time = (self.total_turnaround_time / self.end_condition)
+      throughput = (self.end_condition / self.cpu.clock)
+      cpu_utilization = 100 * (self.total_cpu_service_times / self.cpu.clock)
+      disk_utilization = 100 * (self.total_disk_service_times / self.cpu.clock)
+      avg_num_processes_in_readyQ = self.sum_num_of_proc_in_readyQ / self.end_condition
+      avg_num_processes_in_diskQ = self.sum_num_of_proc_in_diskQ / self.end_condition
 
       self.report(avg_turn_around_time, throughput, cpu_utilization, disk_utilization, avg_num_processes_in_readyQ, avg_num_processes_in_diskQ)
 
@@ -114,8 +114,9 @@ class Simulator:
          # cpu isnt busy and the process is not going to disk
          # start the process on the cpu (cpu.busy true) 
          self.cpu.busy = True
-         event_action = "departing" if event.process.disk_probability <= 0.6 else "going to disk"
-         event.type = "DEP" if event.process.disk_probability <= 0.6 else "DISK_ARR"
+         disk_probability = random.uniform(0, 1)
+         event_action = "departing" if disk_probability <= 0.6 else "going to disk"
+         event.type = "DEP" if disk_probability <= 0.6 else "DISK_ARR"
          event.time = self.cpu.clock + event.process.cpu_service_time
 
          print(f"Process {event_action} after CPU service. Scheduling {event.type} event at time={event.time}\n\n")
@@ -133,10 +134,14 @@ class Simulator:
       # Log the state after handling the arrival
       print(f"Post-Arrival: CPU Busy={self.cpu.busy}, Ready Queue Size={len(self.ready_queue)}, Event Queue Size={len(self.event_queue)}\n\n")
 
-      new_process = self.generateProcess()
-      new_arrival_event = self.generateEvent(new_process.arrival_time, "ARR", new_process)
-      self.event_queue.append(new_arrival_event)
-      print(f"Scheduled next arrival at time={new_arrival_event.time}, Process ID={new_process.pid}\n\n\n\n")
+      # check if the process is done with disk
+      if event.process.disk_done is False:
+         self.num_disk_processes += 1
+         # generate the next process
+         new_process = self.generateProcess()
+         new_arrival_event = self.generateEvent(new_process.arrival_time, "ARR", new_process)
+         self.event_queue.append(new_arrival_event)
+         print(f"Scheduled next arrival at time={new_arrival_event.time}, Process ID={new_process.pid}\n\n\n\n")
 
 ######################################################handleDiskArival#
    def handleDiskArival(self, event):
@@ -170,6 +175,14 @@ class Simulator:
       # process is done with disk update metrics
       self.sum_num_of_proc_in_diskQ += len(self.disk_queue)
       self.total_disk_service_times += event.process.disk_service_time
+
+      # change the event to an arrival event since it is going to the cpu
+      event.type = "ARR"
+      event.time = self.cpu.clock
+      # set disk done to true so another process doesn't get generated
+      event.process.disk_done = True 
+      self.event_queue.append(event)
+      print(f"Process ID={event.process.pid} done with disk service. Scheduling ARR event at time={event.time}\n\n")
 
       # if disk queue is empty, disk is idle
       if len(self.disk_queue) == 0:
@@ -220,9 +233,10 @@ class Simulator:
       process = Process()
 
       process.arrival_time = self.cpu.clock + (math.log(1 - float(random.uniform(0, 1))) / (-self.average_arrival_rate))
-      process.cpu_service_time = math.log(1 - float(random.uniform(0, 1))) / (-(1/self.average_CPU_service_time))
-      process.disk_service_time = math.log(1 - float(random.uniform(0, 1))) / (-(1/self.average_Disk_service_time))
-      process.disk_probability = random.uniform(0, 1)
+      cpu_lambda = 1.0 / self.average_CPU_service_time
+      disk_lambda = 1.0 / self.average_Disk_service_time
+      process.cpu_service_time = math.log(1 - float(random.uniform(0, 1))) / (-cpu_lambda)
+      process.disk_service_time = math.log(1 - float(random.uniform(0, 1))) / (-disk_lambda)
       return process
    
 #######################################################generateEvent#
@@ -243,11 +257,28 @@ class Simulator:
    def report(self, avg_turn_around_time, throughput, cpu_utilization, disk_utilization, avg_num_processes_in_readyQ, avg_num_processes_in_diskQ):
       print(f"{'Metrics Report':^40}")
       print(f"{'='*40}")
-      print(f"{'Avg. Turnaround Time:':<30}{avg_turn_around_time:>10.2f} seconds")
-      print(f"{'Throughput:':<30}{throughput:>10.2f} processes/unit time")
-      print(f"{'CPU Utilization:':<30}{cpu_utilization:>10.2f}%")
-      print(f"{'Disk Utilization:':<30}{disk_utilization:>10.2f}%")
-      print(f"{'Avg. Processes in Ready Queue:':<30}{avg_num_processes_in_readyQ:>10.2f}")
-      print(f"{'Avg. Processes in Disk Queue:':<30}{avg_num_processes_in_diskQ:>10.2f}")
+      print(f"{'Throughput:':<30}{throughput:>10.4f} processes/unit time")      
+      print(f"{'CPU Utilization:':<30}{cpu_utilization:>10.4f}%")
+      print(f"{'Disk Utilization:':<30}{disk_utilization:>10.4f}%")
+      print(f"{'Avg. Processes in Ready Queue:':<30}{avg_num_processes_in_readyQ:>10.4f}")
+      print(f"{'Avg. Processes in Disk Queue:':<30}{avg_num_processes_in_diskQ:>10.4f}")
+      print(f"{'Avg. Turnaround Time:':<30}{avg_turn_around_time:>10.4f} seconds")
       print(f"{'='*40}")
+
+      print('\n\n\n')
+
+      print(f"{'Compare to':^40}")
+      print(f"{'='*40}")
+      print(f"{'Throughput:':<30}{12} processes/unit time")      
+      print(f"{'CPU Utilization:':<30}{40}%")
+      print(f"{'Disk Utilization:':<30}{48}%")
+      print(f"{'Avg. Processes in Ready Queue:':<30}{0.2666}")
+      print(f"{'Avg. Processes in Disk Queue:':<30}{0.44}")
+      print(f"{'Avg. Turnaround Time:':<30}{0.132} seconds")
+      print(f"{'='*40}")
+
+      print('\n\n\n')
+
+      print("calculated average_cpu_service_time", self.total_cpu_service_times / self.end_condition)
+      print("calculated average_disk_service_time", self.total_disk_service_times / self.num_disk_processes)
 ###################################################################simulator#####################################
