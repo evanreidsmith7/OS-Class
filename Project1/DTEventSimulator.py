@@ -86,7 +86,7 @@ class Simulator:
 
 ##########################################################handleArrival#
    def handleArrival(self, event):
-      if self.cpu.busy is False and self.disk_probability <= 0.6:
+      if self.cpu.busy is False and event.process.disk_probability <= 0.6:
          # cpu isnt busy and the process is not going to disk
 
          # start the process on the cpu (cpu.busy true) 
@@ -99,11 +99,11 @@ class Simulator:
 
          # add the event back to the event queue
          self.event_queue.append(event)
-      elif self.cpu.busy is True and self.disk_probability <= 0.6:
+      elif self.cpu.busy is True and event.process.disk_probability <= 0.6:
          # cpu is busy and the process is not going to disk
 
          # add the process to the ready queue
-         self.cpu.ready_queue.append(event.process)
+         self.ready_queue.append(event.process)
 
       else:
          print("Something is wrong with the cpu")
@@ -126,7 +126,7 @@ class Simulator:
       self.total_cpu_service_times += event.process.cpu_service_time
       
       # if ready queue is empty, cpu is idle
-      if len(self.cready_queue) == 0:
+      if len(self.ready_queue) == 0:
          self.cpu.busy = False
       else:
          # pull the next process from the ready queue
