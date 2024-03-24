@@ -61,18 +61,24 @@ class Simulator:
       # Implement the FCFS 
       print("Running the scheduler...")
       first_process = self.generateProcess()
+      print(f"First process generated with PID={first_process.pid} and arrival time={first_process.arrival_time}")
 
       first_event = self.generateEvent(first_process.arrival_time, "ARR", first_process)
+      print(f"First event scheduled: Type={first_event.type}, Time={first_event.time}, Process PID={first_event.process.pid}")
       self.event_queue.append(first_event)
 
       while self.number_completed_processes < self.end_condition:
-         print("Number of completed processes: ", self.number_completed_processes)
+         print(f"Current simulation clock: {self.cpu.clock}")
+         print(f"Number of completed processes: {self.number_completed_processes}")
+         print(f"Event queue size: {len(self.event_queue)}, Ready queue size: {len(self.ready_queue)}, Disk queue size: {len(self.disk_queue)}")
          
          # sort the event queue so that the next occuring event appears
          self.event_queue.sort(key=lambda x: x.time)
 
          # take the next event from the event queue
          event = self.event_queue.pop(0)
+         print(f"Processing event: Type={event.type}, Time={event.time}, Process PID={event.process.pid}")
+
 
          # set clock to the occuring event time because time hops around
          self.cpu.clock = event.time
@@ -89,8 +95,14 @@ class Simulator:
             self.handleDeparture(event)
          else:
             print("Invalid event type")
+         
+         print(f"Post-event processing: Simulation clock: {self.cpu.clock}, Ready queue size: {len(self.ready_queue)}, Disk queue size: {len(self.disk_queue)}")
       
-      print("Simulation complete")
+      print("Simulation complete. Final metrics:")
+      print(f"Total completed processes: {self.number_completed_processes}")
+      print(f"Average turnaround time: {self.total_turnaround_time / self.number_completed_processes if self.number_completed_processes > 0 else 0}")
+      print(f"CPU utilization: {(self.total_cpu_service_times / self.cpu.clock) * 100 if self.cpu.clock > 0 else 0}%")
+      print(f"Disk utilization: {(self.total_disk_service_times / self.cpu.clock) * 100 if self.cpu.clock > 0 else 0}%")
 
 ##########################################################handleArrival#
    def handleArrival(self, event):
@@ -176,9 +188,11 @@ class Simulator:
       print(f"Handling CPU Departure at time={self.cpu.clock}, Process ID={event.process.pid}, CPU Busy={self.cpu.busy}, Ready Queue Size={len(self.ready_queue)}")
 
       # process is done update metrics
+      turnaround_time = self.cpu.clock - event.process.arrival_time
+
       self.sum_num_of_proc_in_readyQ += len(self.ready_queue)
       self.number_completed_processes += 1
-      self.total_turnaround_time += (self.cpu.clock - event.process.arrival_time)
+      self.total_turnaround_time += turnaround_time
       self.total_cpu_service_times += event.process.cpu_service_time
       print(f"Process ID={event.process.pid} departed. Turnaround time: {turnaround_time}, CPU service time: {event.process.cpu_service_time}")      
       
