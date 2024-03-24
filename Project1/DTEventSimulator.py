@@ -16,6 +16,7 @@ class Disk:
 
 ###################################################################process#####################################
 class Process:
+   last_pid = 0  
    def __init__(self):
       self.arrival_time = 0
       self.cpu_service_time = 0
@@ -23,6 +24,9 @@ class Process:
       self.cpu_done = False
       self.disk_done = False
       self.disk_probability = 0.0
+
+      self.pid = Process.last_pid + 1  # Assign a unique PID to the process
+      Process.last_pid = self.pid  # Update the last assigned PID
 
 ###################################################################event#####################################
 class Event:
@@ -90,9 +94,9 @@ class Simulator:
 
 ##########################################################handleArrival#
    def handleArrival(self, event):
+      print(f"Handling Arrival at time={self.cpu.clock}, Process ID={event.process.id}, CPU Busy={self.cpu.busy}, Ready Queue Size={len(self.ready_queue)}")
       if self.cpu.busy is False:
          # cpu isnt busy and the process is not going to disk
-
          # start the process on the cpu (cpu.busy true) 
          self.cpu.busy = True
 
@@ -197,8 +201,8 @@ class Simulator:
       process.arrival_time = self.cpu.clock + (math.log(1 - float(random.uniform(0, 1))) / (-self.average_arrival_rate))
       process.cpu_service_time = math.log(1 - float(random.uniform(0, 1))) / (-(1/self.average_CPU_service_time))
       process.disk_service_time = math.log(1 - float(random.uniform(0, 1))) / (-(1/self.average_Disk_service_time))
-      process.disk_probability = random.uniform(0, 1)
-
+      #process.disk_probability = random.uniform(0, 1)
+      process.disk_probability = 0
       return process
    
 #######################################################generateEvent#
