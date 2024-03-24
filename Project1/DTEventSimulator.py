@@ -107,7 +107,6 @@ class Simulator:
          self.event_queue.append(event)
 
       elif self.cpu.busy is True:
-         print("cpu is busy, Process going to ready queue\n\n")
          # cpu is busy and the process is not going to disk
          # add the process to the ready queue
          self.ready_queue.append(event.process)
@@ -147,12 +146,10 @@ class Simulator:
 ###################################################handleDiskDeparture#
    def handleDiskDeparture(self, event):
       # process is done with disk update metrics
-      self.sum_num_of_proc_in_diskQ += len(self.disk_queue)
-      self.total_disk_service_times += event.process.disk_service_time
+      
 
       # change the event to an arrival event since it is going to the cpu
       event.type = "ARR"
-      event.time = self.cpu.clock
       # set disk done to true so another process doesn't get generated
       event.process.disk_done = True 
       self.event_queue.append(event)
@@ -171,11 +168,12 @@ class Simulator:
    def handleDeparture(self, event):
       # process is done update metrics
       turnaround_time = self.cpu.clock - event.process.arrival_time
-
+      self.sum_num_of_proc_in_diskQ += len(self.disk_queue)
       self.sum_num_of_proc_in_readyQ += len(self.ready_queue)
       self.number_completed_processes += 1
       self.total_turnaround_time += turnaround_time
       self.total_cpu_service_times += event.process.cpu_service_time
+      self.total_disk_service_times += event.process.disk_service_time if event.process.disk_done is True else 0
       
       # if ready queue is empty, cpu is idle
       if len(self.ready_queue) == 0:
