@@ -62,6 +62,8 @@ class Simulator:
       self.event_queue.append(first_event)
 
       while self.number_completed_processes < self.end_condition:
+         print("Number of completed processes: ", self.number_completed_processes)
+         
          # sort the event queue so that the next occuring event appears
          self.event_queue.sort(key=lambda x: x.time)
 
