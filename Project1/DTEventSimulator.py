@@ -75,8 +75,10 @@ class Simulator:
          # cpu arrival: ARR, disk arival: DISK, departure: DEP
          if event.type == "ARR":
             self.handleArrival(event)
-         elif event.type == "DISK":
-            self.handleDisk(event)
+         elif event.type == "DISK_ARR":
+            self.handleDiskArival(event)
+         elif event.type == "DISK_DEP":
+            self.handleDiskDeparture(event)
          elif event.type == "DEP":
             self.handleDeparture(event)
          else:
@@ -92,17 +94,30 @@ class Simulator:
 
          # check if the process is going to disk
          if event.process.disk_probability <= 0.6:
+            print("Process Departing after cpu service")
             # change the event to a depart because it will leave the cpu
             event.type = "DEP"
-            # update the event time to the end time of the process
+            # update the event time to when its done getting service with cpu
             event.time = self.cpu.clock + event.process.cpu_service_time
 
             # add the event back to the event queue
             self.event_queue.append(event)
+         else:
+            print("Process going to disk after cpu service")
+            # change the event to disk because it will go to disk
+            event.type = "DISK_ARR"
+            # update the event time to when its done getting service with cpu
+            event.time = self.cpu.clock + event.process.cpu_service_time
+
+            # add the event back to the event queue
+            self.event_queue.append(event)
+
       elif self.cpu.busy is True:
+         print("cpu is busy, Process going to ready queue")
          # cpu is busy and the process is not going to disk
          # add the process to the ready queue
          self.ready_queue.append(event.process)
+
       else:
          print("Something is wrong with the cpu")
 
@@ -111,17 +126,44 @@ class Simulator:
       self.event_queue.append(new_arrival_event)
 
 
-############################################################handleDisk#
-   def handleDisk(self, event):
+######################################################handleDiskArival#
+   def handleDiskArival(self, event):
+      if self.disk.busy is False:
+         # disk isnt busy
+         print("disk is not busy, process Departing Disk after disk service")
+         self.disk.busy = True
+         
+         #change the event to an arrival because it will arrive back to the cpu
+         event.type = "DISK_DEP"
+         # update the event time to when its done getting service with disk
+         event.time = self.cpu.clock + event.process.disk_service_time
+
+         # add the event back to the event queue
+         self.event_queue.append(event)
+
+      elif self.disk.busy is True:
+         print("disk is busy, Process going to disk queue")
+         # disk is busy
+         # add the process to the disk queue
+         self.disk_queue.append(event.process)
+
+###################################################handleDiskDeparture#
+   def handleDiskDeparture(self, event):
       pass
+      
 
 #######################################################handleDeparture#
    def handleDeparture(self, event):
       # process is done update metrics
       self.sum_num_of_proc_in_readyQ += len(self.ready_queue)
+      self.sum_num_of_proc_in_diskQ += len(self.disk_queue)
       self.number_completed_processes += 1
       self.total_turnaround_time += (self.cpu.clock - event.process.arrival_time)
-      self.total_cpu_service_times += event.process.cpu_service_time
+      if event.process.disk_probability <= 0.6:
+         self.total_cpu_service_times += event.process.cpu_service_time
+      else:
+         self.total_disk_service_times += event.process.disk_service_time
+         self.total_disk_service_times += event.process.disk_service_time
       
       # if ready queue is empty, cpu is idle
       if len(self.ready_queue) == 0:
