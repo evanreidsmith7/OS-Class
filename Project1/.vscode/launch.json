@@ -8,7 +8,7 @@
            "program": "${workspaceFolder}/main.py",
            "console": "integratedTerminal",
            "args": [
-               "10", // average_arrival_rate
+               "12", // average_arrival_rate
                "0.02", // average_CPU_service_time
                "0.06" // average_Disk_service_time
            ],
