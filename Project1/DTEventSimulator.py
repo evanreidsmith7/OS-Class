@@ -7,14 +7,12 @@ class CPU:
       self.clock = 0
       self.busy = False
       self.current_process = Process()
-      self.ready_queue = []
 
 ###################################################################disk#####################################
 class Disk:
    def __init__(self):
       self.busy = False
       self.current_process = Process()
-      self.disk_queue = []
 
 ###################################################################process#####################################
 class Process:
@@ -39,12 +37,16 @@ class Event:
 class Simulator:
    def __init__(self, average_arrival_rate, average_CPU_service_time, average_Disk_service_time):
       self.cpu = CPU()
+      self.disk = Disk()
       self.average_arrival_rate = average_arrival_rate
       self.average_CPU_service_time = average_CPU_service_time
       self.average_Disk_service_time = average_Disk_service_time
       self.end_condition = 10000
 
+      self.ready_queue = []
+      self.disk_queue = []
       self.event_queue = []
+
       self.number_completed_processes = 0
       self.total_turnaround_time = 0
       self.total_cpu_service_times = 0
@@ -86,6 +88,7 @@ class Simulator:
    def handleArrival(self, event):
       if self.cpu.busy is False and self.disk_probability <= 0.6:
          # cpu isnt busy and the process is not going to disk
+
          # start the process on the cpu (cpu.busy true) 
          self.cpu.busy = True
          # change the event to a depart because it will leave the cpu
@@ -96,8 +99,18 @@ class Simulator:
 
          # add the event back to the event queue
          self.event_queue.append(event)
+      elif self.cpu.busy is True and self.disk_probability <= 0.6:
+         # cpu is busy and the process is not going to disk
+
+         # add the process to the ready queue
+         self.cpu.ready_queue.append(event.process)
+
       else:
          print("Something is wrong with the cpu")
+
+      new_process = self.generateProcess()
+      new_arrival_event = self.generateEvent(new_process.arrival_time, "ARR", new_process)
+      self.event_queue.append(new_arrival_event)
 
 
 ############################################################handleDisk#
@@ -106,7 +119,23 @@ class Simulator:
 
 #######################################################handleDeparture#
    def handleDeparture(self, event):
-      pass
+      # process is done update metrics
+      self.sum_num_of_proc_in_readyQ += len(self.ready_queue)
+      self.number_completed_processes += 1
+      self.total_turnaround_time += (self.cpu.clock - event.process.arrival_time)
+      self.total_cpu_service_times += event.process.cpu_service_time
+      
+      # if ready queue is empty, cpu is idle
+      if len(self.cready_queue) == 0:
+         self.cpu.busy = False
+      else:
+         # pull the next process from the ready queue
+         process_departing = self.ready_queue.pop(0)
+         process_departing.start_time = self.cpu.clock
+         process_departing.end_time = process_departing.start_time + process_departing.cpu_service_time
+         new_departure_event = self.generateEvent(process_departing.end_time, "DEP", process_departing)
+         self.event_queue.append(new_departure_event)
+
 
 #######################################################generateProcess#
    def generateProcess(self):
