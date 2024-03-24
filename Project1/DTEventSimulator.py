@@ -146,24 +146,26 @@ class Simulator:
          # disk is busy
          # add the process to the disk queue
          self.disk_queue.append(event.process)
+      
+      else:
+         print("Something is wrong with the disk")
 
 ###################################################handleDiskDeparture#
    def handleDiskDeparture(self, event):
-      pass
+      # process is done with disk update metrics
+      self.sum_num_of_proc_in_diskQ += len(self.disk_queue)
+      self.total_disk_service_times += event.process.disk_service_time
+
+
       
 
 #######################################################handleDeparture#
    def handleDeparture(self, event):
       # process is done update metrics
       self.sum_num_of_proc_in_readyQ += len(self.ready_queue)
-      self.sum_num_of_proc_in_diskQ += len(self.disk_queue)
       self.number_completed_processes += 1
       self.total_turnaround_time += (self.cpu.clock - event.process.arrival_time)
-      if event.process.disk_probability <= 0.6:
-         self.total_cpu_service_times += event.process.cpu_service_time
-      else:
-         self.total_disk_service_times += event.process.disk_service_time
-         self.total_disk_service_times += event.process.disk_service_time
+      self.total_cpu_service_times += event.process.cpu_service_time
       
       # if ready queue is empty, cpu is idle
       if len(self.ready_queue) == 0:
