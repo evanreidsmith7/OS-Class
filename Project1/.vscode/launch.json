@@ -1,16 +1,18 @@
 {
-   // Use IntelliSense to learn about possible attributes.
-   // Hover to view descriptions of existing attributes.
-   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
    "version": "0.2.0",
    "configurations": [
-      {
-         "name": "Python Debugger: Current File with Arguments",
-         "type": "debugpy",
-         "request": "launch",
-         "program": "${file}",
-         "console": "integratedTerminal",
-         "args": "${command:pickArgs}"
-      }
+       {
+           "name": "Python: Run Simulator",
+           "type": "debugpy",
+           "request": "launch",
+           "program": "${workspaceFolder}/main.py",
+           "console": "integratedTerminal",
+           "args": [
+               "10", // average_arrival_rate
+               "0.02", // average_CPU_service_time
+               "0.06" // average_Disk_service_time
+           ],
+           "cwd": "${workspaceFolder}"
+       }
    ]
 }

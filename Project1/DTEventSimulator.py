@@ -28,10 +28,10 @@ class Process:
 
 ###################################################################event#####################################
 class Event:
-   def __init__(self, time, type, process):
-      self.time = time
-      self.type = type
-      self.process = process
+   def __init__(self):
+      self.time = 0
+      self.type = ''
+      self.process = Process()
 
 ###################################################################simulator#####################################
 class Simulator:
@@ -141,7 +141,7 @@ class Simulator:
    def generateProcess(self):
       process = Process()
 
-      process.arrival_time = self.clock + (math.log(1 - float(random.uniform(0, 1))) / (-self.average_arrival_rate))
+      process.arrival_time = self.cpu.clock + (math.log(1 - float(random.uniform(0, 1))) / (-self.average_arrival_rate))
       process.cpu_service_time = math.log(1 - float(random.uniform(0, 1))) / (-(1/self.average_CPU_service_time))
       process.disk_service_time = math.log(1 - float(random.uniform(0, 1))) / (-(1/self.average_Disk_service_time))
       process.end_time = process.arrival_time + process.cpu_service_time
