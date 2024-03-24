@@ -13,7 +13,7 @@ if __name__ == "__main__":
    average_Disk_service_time = float(sys.argv[3])
 
    # Initialize the simulator with the provided command-line arguments
-   sim = Simulator(average_arrival_rate, average_CPU_service_time, average_Disk_service_time)
+   sim = Simulator(12, .02, .06)
 
    # Run the simulation
    sim.run()
