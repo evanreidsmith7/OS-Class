@@ -83,6 +83,8 @@ class Simulator:
             self.handleDeparture(event)
          else:
             print("Invalid event type")
+      
+      print("Simulation complete")
 
 ##########################################################handleArrival#
    def handleArrival(self, event):
