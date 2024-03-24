@@ -39,7 +39,7 @@ class Simulator:
       self.average_arrival_rate = average_arrival_rate
       self.average_CPU_service_time = average_CPU_service_time
       self.average_Disk_service_time = average_Disk_service_time
-      self.end_condition = 10000
+      self.end_condition = 10
 
       self.ready_queue = []
       self.disk_queue = []
@@ -152,15 +152,24 @@ class Simulator:
 
 ###################################################handleDiskDeparture#
    def handleDiskDeparture(self, event):
+      print("Process Departed from disk, pulling next process from disk queue if available")
       # process is done with disk update metrics
       self.sum_num_of_proc_in_diskQ += len(self.disk_queue)
       self.total_disk_service_times += event.process.disk_service_time
 
-
-      
+      # if disk queue is empty, disk is idle
+      if len(self.disk_queue) == 0:
+         self.disk.busy = False
+      else:
+         # pull the next process from the disk queue
+         process_departing = self.disk_queue.pop(0)
+         depart_time = self.cpu.clock + process_departing.disk_service_time
+         new_departure_event = self.generateEvent(depart_time, "ARR", process_departing)
+         self.event_queue.append(new_departure_event)
 
 #######################################################handleDeparture#
    def handleDeparture(self, event):
+      print("Process Departed from cpu, pulling next process from ready queue if available")
       # process is done update metrics
       self.sum_num_of_proc_in_readyQ += len(self.ready_queue)
       self.number_completed_processes += 1
@@ -176,7 +185,6 @@ class Simulator:
          depart_time = self.cpu.clock + process_departing.cpu_service_time
          new_departure_event = self.generateEvent(depart_time, "DEP", process_departing)
          self.event_queue.append(new_departure_event)
-
 
 #######################################################generateProcess#
    def generateProcess(self):
