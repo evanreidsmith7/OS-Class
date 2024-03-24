@@ -98,12 +98,12 @@ class Simulator:
          
          print(f"\n\nPost-event processing: Simulation clock: {self.cpu.clock}, Ready queue size: {len(self.ready_queue)}, Disk queue size: {len(self.disk_queue)}")
       
-      avg_turn_around_time = round((self.total_turnaround_time / self.end_condition), 3)
-      throughput = round((self.end_condition / self.cpu.clock), 3)
-      cpu_utilization = round(self.total_cpu_service_times / self.cpu.clock, 3)
-      disk_utilization = round(self.total_disk_service_times / self.cpu.clock, 3)
-      avg_num_processes_in_readyQ = round(self.sum_num_of_proc_in_readyQ / self.end_condition, 3)
-      avg_num_processes_in_diskQ = round(self.sum_num_of_proc_in_diskQ / self.end_condition, 3)
+      avg_turn_around_time = (self.total_turnaround_time / self.end_condition)
+      throughput = (self.end_condition / self.cpu.clock)
+      cpu_utilization = self.total_cpu_service_times / self.cpu.clock
+      disk_utilization = self.total_disk_service_times / self.cpu.clock
+      avg_num_processes_in_readyQ = self.sum_num_of_proc_in_readyQ / self.end_condition
+      avg_num_processes_in_diskQ = self.sum_num_of_proc_in_diskQ / self.end_condition
 
       self.report(avg_turn_around_time, throughput, cpu_utilization, disk_utilization, avg_num_processes_in_readyQ, avg_num_processes_in_diskQ)
 
@@ -220,8 +220,10 @@ class Simulator:
       process = Process()
 
       process.arrival_time = self.cpu.clock + (math.log(1 - float(random.uniform(0, 1))) / (-self.average_arrival_rate))
-      process.cpu_service_time = math.log(1 - float(random.uniform(0, 1))) / (-(1/self.average_CPU_service_time))
-      process.disk_service_time = math.log(1 - float(random.uniform(0, 1))) / (-(1/self.average_Disk_service_time))
+      cpu_lambda = 1 / self.average_CPU_service_time
+      disk_lambda = 1 / self.average_Disk_service_time
+      process.cpu_service_time = math.log(1 - float(random.uniform(0, 1))) / (-cpu_lambda)
+      process.disk_service_time = math.log(1 - float(random.uniform(0, 1))) / (-disk_lambda)
       process.disk_probability = random.uniform(0, 1)
       return process
    
