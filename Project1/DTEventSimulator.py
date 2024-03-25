@@ -45,7 +45,7 @@ class Simulator:
       self.ready_queue = []
       self.disk_queue = []
       self.event_queue = []
-      self.debug = True
+      self.debug = False
 
       self.num_disk_processes = 0
       self.number_completed_processes = 0
@@ -108,9 +108,25 @@ class Simulator:
 ##########################################################handleArrival#
    def handleArrival(self, event):
       print(f"Handling Arrival at time={self.cpu.clock}, Process ID={event.process.pid}, CPU Busy={self.cpu.busy}, Ready Queue Size={len(self.ready_queue)}\n\n") if self.debug else None
+      if self.cpu.busy is False:
+         self.cpu.busy = True
+         depart_time = self.cpu.clock + event.process.cpu_service_time   
+         departure_event = self.generateEvent(depart_time, "DEP", event.process)
+         self.event_queue.append(departure_event)
 
+         print(f"Scheduled Event DEP at time={departure_event.time}, Process ID={event.process.pid}\n\n\n\n") if self.debug else None
+      else:
+         self.ready_queue.append(event.process)
+         print(f"Process ID={event.process.pid} added to ready queue\n\n\n\n") if self.debug else None
+      
+      if event.process.disk_done is False:
+         self.num_disk_processes += 1
+         new_process = self.generateProcess()
+         new_arrival_event = self.generateEvent(new_process.arrival_time, "ARR", new_process)
+         self.event_queue.append(new_arrival_event)
+         print(f"Scheduled next arrival at time={new_arrival_event.time}, Process ID={new_process.pid}\n\n\n\n") if self.debug else None
 
-
+      '''
       # check if the process is done with disk
       if event.process.disk_done is False:
          self.num_disk_processes += 1
@@ -119,6 +135,7 @@ class Simulator:
          new_arrival_event = self.generateEvent(new_process.arrival_time, "ARR", new_process)
          self.event_queue.append(new_arrival_event)
          print(f"Scheduled next arrival at time={new_arrival_event.time}, Process ID={new_process.pid}\n\n\n\n") if self.debug else None
+      '''
 
       # Log the state after handling the arrival
       print(f"Post-Arrival: CPU Busy={self.cpu.busy}, Ready Queue Size={len(self.ready_queue)}, Event Queue Size={len(self.event_queue)}\n\n") if self.debug else None
@@ -126,17 +143,72 @@ class Simulator:
 ######################################################handleDiskArival#
    def handleDiskArival(self, event):
       print(f"Handling Disk Arrival at time={self.cpu.clock}, Process ID={event.process.pid}, Disk Busy={self.disk.busy}, Disk Queue Size={len(self.disk_queue)}") if self.debug else None
+      if self.disk.busy is False:
+         # disk is not busy, process can be served
+         self.disk.busy = True
+         depart_time = self.cpu.clock + event.process.disk_service_time
+         disk_departure_event = self.generateEvent(depart_time, "DISK_DEP", event.process)
+
+         self.event_queue.append(disk_departure_event)
+         print(f"Scheduled disk departure at time={disk_departure_event.time}, Process ID={event.process.pid}\n\n\n\n") if self.debug else None
+      else:
+         # disk is busy, process goes to disk queue
+         self.disk_queue.append(event.process)
+         print(f"Process ID={event.process.pid} added to disk queue\n\n\n\n") if self.debug else None
       print(f"Post-Disk Arrival: Disk Busy={self.disk.busy}, Disk Queue Size={len(self.disk_queue)}, Event Queue Size={len(self.event_queue)}\n\n\n\n\n\n") if self.debug else None
 
 ###################################################handleDiskDeparture#
    def handleDiskDeparture(self, event):
-      print(f"Handling Disk Departure at time={self.cpu.clock}, Process ID={event.process.pid}, Disk Busy={self.disk.busy}, Disk Queue Size={len(self.disk_queue)}\n\n") if self.debug else None'
-      
+      print(f"Handling Disk Departure at time={self.cpu.clock}, Process ID={event.process.pid}, Disk Busy={self.disk.busy}, Disk Queue Size={len(self.disk_queue)}\n\n") if self.debug else None
+      # process got served, take the service time
+      self.total_disk_service_times += event.process.disk_service_time
+      self.sum_num_of_proc_in_diskQ += len(self.disk_queue)
+
+      # schedule an arrival event for the process that just finished disk service
+      event.process.disk_done = True
+      cpu_arrival_time = self.cpu.clock
+      cpu_arrival_event = self.generateEvent(cpu_arrival_time, "ARR", event.process)
+      self.event_queue.append(cpu_arrival_event)
+
+      if self.disk_queue: # if there are processes in the disk queue
+         # schedule the next process in the disk queue
+         self.disk.busy = True
+         next_process = self.disk_queue.pop(0)
+         depart_time = self.cpu.clock + next_process.disk_service_time
+         disk_departure_event = self.generateEvent(depart_time, "DISK_DEP", next_process)
+         self.event_queue.append(disk_departure_event)
+         print(f"Scheduled next disk departure at time={disk_departure_event.time}, Process ID={next_process.pid}\n\n\n\n") if self.debug else None
+      else:
+         self.disk.busy = False
+         print(f"Disk is now idle\n\n\n\n") if self.debug else None
       print(f"Post-Disk Departure: Disk Busy={self.disk.busy}, Disk Queue Size={len(self.disk_queue)}, Event Queue Size={len(self.event_queue)}\n\n\n\n") if self.debug else None
 
 #######################################################handleDeparture#
    def handleDeparture(self, event):
       print(f"Handling CPU Departure at time={self.cpu.clock}, Process ID={event.process.pid}, CPU Busy={self.cpu.busy}, Ready Queue Size={len(self.ready_queue)}\n\n") if self.debug else None
+      # process got served, take the service time
+      self.total_cpu_service_times += event.process.cpu_service_time
+      self.sum_num_of_proc_in_readyQ += len(self.ready_queue)
+
+      if random.uniform(0, 1) <= 0.6:
+         self.number_completed_processes += 1
+         self.total_turnaround_time += (self.cpu.clock - event.process.arrival_time)
+         print(f"Process ID={event.process.pid} completed at time={self.cpu.clock}\n\n\n\n") if self.debug else None
+      else:
+         disk_arrival_time = self.cpu.clock
+         disk_arrival_event = self.generateEvent(disk_arrival_time, "DISK_ARR", event.process)
+         self.event_queue.append(disk_arrival_event)
+      
+      if self.ready_queue:
+         next_process = self.ready_queue.pop(0)
+         self.cpu.busy = True
+         depart_time = self.cpu.clock + next_process.cpu_service_time
+         departure_event = self.generateEvent(depart_time, "DEP", next_process)
+         self.event_queue.append(departure_event)
+         print(f"Scheduled next departure at time={departure_event.time}, Process ID={next_process.pid}\n\n\n\n") if self.debug else None
+      else:
+         self.cpu.busy = False
+         print(f"CPU is now idle\n\n\n\n") if self.debug else None
 
       print(f"Post-Departure: CPU Busy={self.cpu.busy}, Ready Queue Size={len(self.ready_queue)}, Completed Processes={self.number_completed_processes}\n\n\n\n") if self.debug else None
 
