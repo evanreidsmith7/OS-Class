@@ -190,12 +190,16 @@ class Simulator:
       self.sum_num_of_proc_in_diskQ += len(self.disk_queue)
       self.total_disk_service_times += event.process.disk_service_time
 
+      # since the process is done with disk, it is going back to the cpu
+      self.ready_queue.append(event.process)
+      '''
       # change the event to an arrival event since it is going to the cpu
       event.type = "ARR"
       event.time = self.cpu.clock
       # set disk done to true so another process doesn't get generated
       event.process.disk_done = True 
       self.event_queue.append(event)
+      '''
       print(f"Process ID={event.process.pid} done with disk service. Scheduling ARR event at time={event.time}\n\n") if self.debug else None
 
       # if disk queue is empty, disk is idle
