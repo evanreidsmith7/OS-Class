@@ -162,7 +162,7 @@ class Simulator:
       print(f"Handling Disk Departure at time={self.cpu.clock}, Process ID={event.process.pid}, Disk Busy={self.disk.busy}, Disk Queue Size={len(self.disk_queue)}\n\n") if self.debug else None
       # process got served, take the service time
       self.total_disk_service_times += event.process.disk_service_time
-      self.sum_num_of_proc_in_diskQ += len(self.disk_queue)
+      
 
       # schedule an arrival event for the process that just finished disk service
       event.process.disk_done = True
@@ -174,6 +174,7 @@ class Simulator:
          # schedule the next process in the disk queue
          self.disk.busy = True
          next_process = self.disk_queue.pop(0)
+         
          depart_time = self.cpu.clock + next_process.disk_service_time
          disk_departure_event = self.generateEvent(depart_time, "DISK_DEP", next_process)
          self.event_queue.append(disk_departure_event)
@@ -188,7 +189,7 @@ class Simulator:
       print(f"Handling CPU Departure at time={self.cpu.clock}, Process ID={event.process.pid}, CPU Busy={self.cpu.busy}, Ready Queue Size={len(self.ready_queue)}\n\n") if self.debug else None
       # process got served, take the service time
       self.total_cpu_service_times += event.process.cpu_service_time
-      self.sum_num_of_proc_in_readyQ += len(self.ready_queue)
+      
 
       if random.uniform(0, 1) <= 0.6:
          self.number_completed_processes += 1
@@ -264,4 +265,5 @@ class Simulator:
 
       print("calculated average_cpu_service_time", self.total_cpu_service_times / self.end_condition)
       print("calculated average_disk_service_time", self.total_disk_service_times / self.num_disk_processes)
+
 ###################################################################simulator#####################################
