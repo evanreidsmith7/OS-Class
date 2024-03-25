@@ -126,17 +126,6 @@ class Simulator:
          self.event_queue.append(new_arrival_event)
          print(f"Scheduled next arrival at time={new_arrival_event.time}, Process ID={new_process.pid}\n\n\n\n") if self.debug else None
 
-      '''
-      # check if the process is done with disk
-      if event.process.disk_done is False:
-         self.num_disk_processes += 1
-         # generate the next process
-         new_process = self.generateProcess()
-         new_arrival_event = self.generateEvent(new_process.arrival_time, "ARR", new_process)
-         self.event_queue.append(new_arrival_event)
-         print(f"Scheduled next arrival at time={new_arrival_event.time}, Process ID={new_process.pid}\n\n\n\n") if self.debug else None
-      '''
-
       # Log the state after handling the arrival
       print(f"Post-Arrival: CPU Busy={self.cpu.busy}, Ready Queue Size={len(self.ready_queue)}, Event Queue Size={len(self.event_queue)}\n\n") if self.debug else None
 
