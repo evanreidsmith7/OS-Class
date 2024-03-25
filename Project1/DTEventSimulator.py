@@ -6,13 +6,11 @@ class CPU:
    def __init__(self):
       self.clock = 0
       self.busy = False
-      self.current_process = Process()
 
 ###################################################################disk#####################################
 class Disk:
    def __init__(self):
       self.busy = False
-      self.current_process = Process()
 
 ###################################################################process#####################################
 class Process:
@@ -29,10 +27,10 @@ class Process:
 
 ###################################################################event#####################################
 class Event:
-   def __init__(self):
+   def __init__(self, process=None):
       self.time = 0
       self.type = ''
-      self.process = Process()
+      self.process = process
 
 ###################################################################simulator#####################################
 class Simulator:
@@ -47,7 +45,7 @@ class Simulator:
       self.ready_queue = []
       self.disk_queue = []
       self.event_queue = []
-      self.debug = False
+      self.debug = True
 
       self.num_disk_processes = 0
       self.number_completed_processes = 0
@@ -98,7 +96,22 @@ class Simulator:
             print("Invalid event type") if self.debug else None
          
          print(f"\n\nPost-event processing: Simulation clock: {self.cpu.clock}, Ready queue size: {len(self.ready_queue)}, Disk queue size: {len(self.disk_queue)}") if self.debug else None
-      
+         avg_turn_around_time = (self.total_turnaround_time / self.end_condition)
+         throughput = (self.end_condition / self.cpu.clock)
+         cpu_utilization = 100 * (self.total_cpu_service_times / self.cpu.clock)
+         disk_utilization = 100 * (self.total_disk_service_times / self.cpu.clock)
+         print(f"{'Metrics Report':^40}")
+         print(f"{'='*40}")
+         print(f"{'Throughput:':<30}{throughput:>10.4f} processes/unit time")      
+         print(f"{'CPU Utilization:':<30}{cpu_utilization:>10.4f}%")
+         print(f"{'Disk Utilization:':<30}{disk_utilization:>10.4f}%")
+         print(f"{'Avg. Turnaround Time:':<30}{avg_turn_around_time:>10.4f} seconds")
+         print(f"{'*average_cpu_service_time':<30}{self.total_cpu_service_times / self.end_condition:>10.4f} seconds")
+         print(f"{'*average_disk_service_time':<30}{self.total_disk_service_times / self.num_disk_processes:>10.4f} seconds")
+         print(f"{'='*40}")
+
+
+
       avg_turn_around_time = (self.total_turnaround_time / self.end_condition)
       throughput = (self.end_condition / self.cpu.clock)
       cpu_utilization = 100 * (self.total_cpu_service_times / self.cpu.clock)
@@ -242,10 +255,9 @@ class Simulator:
    
 #######################################################generateEvent#
    def generateEvent(self, time, type, process):
-      event = Event()
+      event = Event(process=process)
       event.time = time
       event.type = type
-      event.process = process
 
       return event
 
