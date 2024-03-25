@@ -45,7 +45,7 @@ class Simulator:
       self.ready_queue = []
       self.disk_queue = []
       self.event_queue = []
-      self.debug = True
+      self.debug = False
 
       self.num_disk_processes = 0
       self.number_completed_processes = 0
@@ -226,8 +226,8 @@ class Simulator:
          # pull the next process from the disk queue
          process_departing = self.disk_queue.pop(0)
          depart_time = self.cpu.clock + process_departing.disk_service_time
-         self.total_disk_service_times += process_departing.process.disk_service_time
-         
+         self.total_disk_service_times += process_departing.disk_service_time
+
          new_departure_event = self.generateEvent(depart_time, "DISK_DEP", process_departing)#maybe##############################################################################################################
          self.event_queue.append(new_departure_event)
          print(f"Process ID={process_departing.pid} pulled from disk queue for service. Scheduling DISK_DEP event at time={depart_time}\n\n") if self.debug else None
