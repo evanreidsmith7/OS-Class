@@ -126,17 +126,6 @@ class Simulator:
          self.event_queue.append(new_arrival_event)
          print(f"Scheduled next arrival at time={new_arrival_event.time}, Process ID={new_process.pid}\n\n\n\n") if self.debug else None
 
-      '''
-      # check if the process is done with disk
-      if event.process.disk_done is False:
-         self.num_disk_processes += 1
-         # generate the next process
-         new_process = self.generateProcess()
-         new_arrival_event = self.generateEvent(new_process.arrival_time, "ARR", new_process)
-         self.event_queue.append(new_arrival_event)
-         print(f"Scheduled next arrival at time={new_arrival_event.time}, Process ID={new_process.pid}\n\n\n\n") if self.debug else None
-      '''
-
       # Log the state after handling the arrival
       print(f"Post-Arrival: CPU Busy={self.cpu.busy}, Ready Queue Size={len(self.ready_queue)}, Event Queue Size={len(self.event_queue)}\n\n") if self.debug else None
 
@@ -194,6 +183,8 @@ class Simulator:
       if random.uniform(0, 1) <= 0.6:
          self.number_completed_processes += 1
          self.total_turnaround_time += (self.cpu.clock - event.process.arrival_time)
+         self.sum_num_of_proc_in_readyQ += len(self.ready_queue)
+         self.sum_num_of_proc_in_diskQ += len(self.disk_queue)
          print(f"Process ID={event.process.pid} completed at time={self.cpu.clock}\n\n\n\n") if self.debug else None
       else:
          disk_arrival_time = self.cpu.clock
@@ -239,31 +230,43 @@ class Simulator:
 
 ##############################################################report#
    def report(self, avg_turn_around_time, throughput, cpu_utilization, disk_utilization, avg_num_processes_in_readyQ, avg_num_processes_in_diskQ):
-      print(f"{'Metrics Report':^40}")
-      print(f"{'='*40}")
-      print(f"{'Throughput:':<30}{throughput:>10.4f} processes/unit time")      
-      print(f"{'CPU Utilization:':<30}{cpu_utilization:>10.4f}%")
-      print(f"{'Disk Utilization:':<30}{disk_utilization:>10.4f}%")
-      print(f"{'Avg. Processes in Ready Queue:':<30}{avg_num_processes_in_readyQ:>10.4f}")
-      print(f"{'Avg. Processes in Disk Queue:':<30}{avg_num_processes_in_diskQ:>10.4f}")
-      print(f"{'Avg. Turnaround Time:':<30}{avg_turn_around_time:>10.4f} seconds")
-      print(f"{'='*40}")
+      report_lines = [
+         f"{'Metrics Report λ: ':}{self.average_arrival_rate:}",
+         f"{'='*40}",
+         f"{'Throughput:':<30}{throughput:>10.4f} processes/unit time",
+         f"{'CPU Utilization:':<30}{cpu_utilization:>10.4f}%",
+         f"{'Disk Utilization:':<30}{disk_utilization:>10.4f}%",
+         f"{'Avg. Processes in Ready Queue:':<30}{avg_num_processes_in_readyQ:>10.4f}",
+         f"{'Avg. Processes in Disk Queue:':<30}{avg_num_processes_in_diskQ:>10.4f}",
+         f"{'Avg. Turnaround Time:':<30}{avg_turn_around_time:>10.4f} seconds",
+         f"{'='*40}"
+      ]
 
-      print('\n\n\n')
+      # Print to console
+      for line in report_lines:
+         print(line)
 
-      print(f"{'Compare to':^40}")
-      print(f"{'='*40}")
-      print(f"{'Throughput:':<30}{12} processes/unit time")      
-      print(f"{'CPU Utilization:':<30}{40}%")
-      print(f"{'Disk Utilization:':<30}{48}%")
-      print(f"{'Avg. Processes in Ready Queue:':<30}{0.2666}")
-      print(f"{'Avg. Processes in Disk Queue:':<30}{0.44}")
-      print(f"{'Avg. Turnaround Time:':<30}{0.132} seconds")
-      print(f"{'='*40}")
 
-      print('\n\n\n')
+      # if lambda is 1, write to file and append to it if lambda is less than 31
+      if self.average_arrival_rate == 1:
+         with open('Results/simulation_report.txt', 'w', encoding='utf-8') as file:
+            for line in report_lines:
+               file.write(line + '\n')
+      elif self.average_arrival_rate < 31 and self.average_arrival_rate > 1:
+         with open('Results/simulation_report.txt', 'a', encoding='utf-8') as file:
+            for line in report_lines:
+               file.write(line + '\n')
 
-      print("calculated average_cpu_service_time", self.total_cpu_service_times / self.end_condition)
-      print("calculated average_disk_service_time", self.total_disk_service_times / self.num_disk_processes)
 
+      print('\n\n\n') if self.debug else None
+      print(f"{'Compare to':^40}") if self.debug else None
+      print(f"{'='*40}") if self.debug else None
+      print(f"{'Throughput:':<30}{12} processes/unit time") if self.debug else None      
+      print(f"{'CPU Utilization:':<30}{40}%") if self.debug else None
+      print(f"{'Disk Utilization:':<30}{48}%") if self.debug else None
+      print(f"{'Avg. Processes in Ready Queue:':<30}{0.2666}") if self.debug else None
+      print(f"{'Avg. Processes in Disk Queue:':<30}{0.44}") if self.debug else None
+      print(f"{'Avg. Turnaround Time:':<30}{0.132} seconds") if self.debug else None
+      print(f"{'='*40}") if self.debug else None
+      print('\n\n\n') if self.debug else None
 ###################################################################simulator#####################################
