@@ -14,6 +14,8 @@ if __name__ == "__main__":
 
    # Initialize the simulator with the provided command-line arguments
    sim = Simulator(12, .02, .06)
-
+   sim1 = Simulator(13, average_CPU_service_time, average_Disk_service_time)
    # Run the simulation
    sim.run()
+   sim1.run()
+   

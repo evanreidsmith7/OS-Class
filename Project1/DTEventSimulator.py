@@ -183,6 +183,8 @@ class Simulator:
       if random.uniform(0, 1) <= 0.6:
          self.number_completed_processes += 1
          self.total_turnaround_time += (self.cpu.clock - event.process.arrival_time)
+         self.sum_num_of_proc_in_readyQ += len(self.ready_queue)
+         self.sum_num_of_proc_in_diskQ += len(self.disk_queue)
          print(f"Process ID={event.process.pid} completed at time={self.cpu.clock}\n\n\n\n") if self.debug else None
       else:
          disk_arrival_time = self.cpu.clock
@@ -228,7 +230,7 @@ class Simulator:
 
 ##############################################################report#
    def report(self, avg_turn_around_time, throughput, cpu_utilization, disk_utilization, avg_num_processes_in_readyQ, avg_num_processes_in_diskQ):
-      print(f"{'Metrics Report':^40}")
+      print(f"{'Metrics Report λ: ':}{self.average_arrival_rate:}")
       print(f"{'='*40}")
       print(f"{'Throughput:':<30}{throughput:>10.4f} processes/unit time")      
       print(f"{'CPU Utilization:':<30}{cpu_utilization:>10.4f}%")
@@ -238,21 +240,15 @@ class Simulator:
       print(f"{'Avg. Turnaround Time:':<30}{avg_turn_around_time:>10.4f} seconds")
       print(f"{'='*40}")
 
-      print('\n\n\n')
-
-      print(f"{'Compare to':^40}")
-      print(f"{'='*40}")
-      print(f"{'Throughput:':<30}{12} processes/unit time")      
-      print(f"{'CPU Utilization:':<30}{40}%")
-      print(f"{'Disk Utilization:':<30}{48}%")
-      print(f"{'Avg. Processes in Ready Queue:':<30}{0.2666}")
-      print(f"{'Avg. Processes in Disk Queue:':<30}{0.44}")
-      print(f"{'Avg. Turnaround Time:':<30}{0.132} seconds")
-      print(f"{'='*40}")
-
-      print('\n\n\n')
-
-      print("calculated average_cpu_service_time", self.total_cpu_service_times / self.end_condition)
-      print("calculated average_disk_service_time", self.total_disk_service_times / self.num_disk_processes)
-
+      print('\n\n\n') if self.debug else None
+      print(f"{'Compare to':^40}") if self.debug else None
+      print(f"{'='*40}") if self.debug else None
+      print(f"{'Throughput:':<30}{12} processes/unit time") if self.debug else None      
+      print(f"{'CPU Utilization:':<30}{40}%") if self.debug else None
+      print(f"{'Disk Utilization:':<30}{48}%") if self.debug else None
+      print(f"{'Avg. Processes in Ready Queue:':<30}{0.2666}") if self.debug else None
+      print(f"{'Avg. Processes in Disk Queue:':<30}{0.44}") if self.debug else None
+      print(f"{'Avg. Turnaround Time:':<30}{0.132} seconds") if self.debug else None
+      print(f"{'='*40}") if self.debug else None
+      print('\n\n\n') if self.debug else None
 ###################################################################simulator#####################################
