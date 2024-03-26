@@ -1,4 +1,5 @@
 import random
+import pandas as pd
 import math
 
 ###################################################################cpu#####################################
@@ -56,6 +57,15 @@ class Simulator:
       self.sum_num_of_proc_in_diskQ = 0
 
 
+
+      self.avg_turn_around_time = 0.0
+      self.throughput = 0.0
+      self.cpu_utilization = 0.0
+      self.disk_utilization = 0.0
+      self.avg_num_processes_in_readyQ = 0.0
+      self.avg_num_processes_in_diskQ = 0.0
+
+
 #################################################first_come_first_serve#
    def first_come_first_serve(self):
       first_process = self.generateProcess()
@@ -96,14 +106,16 @@ class Simulator:
          
          print(f"\n\nPost-event processing: Simulation clock: {self.cpu.clock}, Ready queue size: {len(self.ready_queue)}, Disk queue size: {len(self.disk_queue)}") if self.debug else None
 
-      avg_turn_around_time = (self.total_turnaround_time / self.end_condition)
-      throughput = (self.end_condition / self.cpu.clock)
-      cpu_utilization = 100 * (self.total_cpu_service_times / self.cpu.clock)
-      disk_utilization = 100 * (self.total_disk_service_times / self.cpu.clock)
-      avg_num_processes_in_readyQ = self.sum_num_of_proc_in_readyQ / self.end_condition
-      avg_num_processes_in_diskQ = self.sum_num_of_proc_in_diskQ / self.end_condition
+      self.avg_turn_around_time = (self.total_turnaround_time /self.end_condition)
+      self.throughput = (self.end_condition /self.cpu.clock)
+      self.cpu_utilization = 100 * (self.total_cpu_service_times /self.cpu.clock)
+      self.disk_utilization = 100 * (self.total_disk_service_times /self.cpu.clock)
+      self.avg_num_processes_in_readyQ =self.sum_num_of_proc_in_readyQ /self.end_condition
+      self.avg_num_processes_in_diskQ = self.sum_num_of_proc_in_diskQ / self.end_condition
 
-      self.report(avg_turn_around_time, throughput, cpu_utilization, disk_utilization, avg_num_processes_in_readyQ, avg_num_processes_in_diskQ)
+      self.report(self.avg_turn_around_time, self.throughput, self.cpu_utilization, self.disk_utilization, self.avg_num_processes_in_readyQ, self.avg_num_processes_in_diskQ)
+
+      
 
 ##########################################################handleArrival#
    def handleArrival(self, event):
@@ -269,4 +281,61 @@ class Simulator:
       print(f"{'Avg. Turnaround Time:':<30}{0.132} seconds") if self.debug else None
       print(f"{'='*40}") if self.debug else None
       print('\n\n\n') if self.debug else None
+
+##############################################################excelreport#   
+   def excelReport(self, avg_turn_around_time, throughput, cpu_utilization, disk_utilization, avg_num_processes_in_readyQ, avg_num_processes_in_diskQ):
+    metrics = {
+        "Metric": [
+            "Throughput", 
+            "CPU Utilization", 
+            "Disk Utilization", 
+            "Avg. Processes in Ready Queue", 
+            "Avg. Processes in Disk Queue", 
+            "Avg. Turnaround Time"
+        ],
+        "Value": [
+            f"{throughput:.4f} processes/unit time",
+            f"{cpu_utilization:.4f}%",
+            f"{disk_utilization:.4f}%",
+            f"{avg_num_processes_in_readyQ:.4f}",
+            f"{avg_num_processes_in_diskQ:.4f}",
+            f"{avg_turn_around_time:.4f} seconds"
+        ]
+    }
+    
+    # Convert the metrics dictionary into a DataFrame
+    df = pd.DataFrame(metrics)
+    
+    # Define the Excel file path and sheet name
+    excel_file = 'Results/simulation_metrics.xlsx'
+    sheet_name = f'λ_{self.average_arrival_rate}'
+    
+    # Write to Excel with different behavior based on the arrival rate (λ)
+    if self.average_arrival_rate == 1:
+        # For λ=1, overwrite any existing file or create a new one
+        with pd.ExcelWriter(excel_file, engine='openpyxl', mode='w') as writer:
+            df.to_excel(writer, sheet_name=sheet_name, index=False)
+    elif self.average_arrival_rate < 31 and self.average_arrival_rate > 1:
+        # For 1<λ<31, append to existing file or create a new one
+        try:
+            with pd.ExcelWriter(excel_file, engine='openpyxl', mode='a') as writer:
+                df.to_excel(writer, sheet_name=sheet_name, index=False)
+        except FileNotFoundError:
+            # If the file does not exist, create it
+            with pd.ExcelWriter(excel_file, engine='openpyxl', mode='w') as writer:
+                df.to_excel(writer, sheet_name=sheet_name, index=False)
+
+
+   def get_metrics_df(self, avg_turn_around_time, throughput, cpu_utilization, disk_utilization, avg_num_processes_in_readyQ, avg_num_processes_in_diskQ):
+    metrics = {
+        "Lambda": self.average_arrival_rate,
+        "Throughput": throughput,
+        "CPU Utilization": cpu_utilization,
+        "Disk Utilization": disk_utilization,
+        "Avg. Processes in Ready Queue": avg_num_processes_in_readyQ,
+        "Avg. Processes in Disk Queue": avg_num_processes_in_diskQ,
+        "Avg. Turnaround Time": avg_turn_around_time
+    }
+    return pd.DataFrame([metrics])
+
 ###################################################################simulator#####################################
