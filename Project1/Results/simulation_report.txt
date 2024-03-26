@@ -1,288 +1,270 @@
 Metrics Report λ: 1
 ========================================
-Throughput:                       1.0037 processes/unit time
-CPU Utilization:                  3.3948%
-Disk Utilization:                 4.1456%
-Avg. Processes in Ready Queue:    0.0372
-Avg. Processes in Disk Queue:     0.0017
-Avg. Turnaround Time:             0.0786 seconds
+Throughput:                       1.0093 processes/unit time
+CPU Utilization:                  3.4059%
+Disk Utilization:                 4.0137%
+Avg. Processes in Ready Queue:    0.0354
+Avg. Processes in Disk Queue:     0.0022
+Avg. Turnaround Time:             0.0764 seconds
 ========================================
 Metrics Report λ: 2
 ========================================
-Throughput:                       1.9912 processes/unit time
-CPU Utilization:                  6.4349%
-Disk Utilization:                 7.8682%
-Avg. Processes in Ready Queue:    0.0660
-Avg. Processes in Disk Queue:     0.0065
-Avg. Turnaround Time:             0.0774 seconds
+Throughput:                       2.0110 processes/unit time
+CPU Utilization:                  6.8592%
+Disk Utilization:                 8.3207%
+Avg. Processes in Ready Queue:    0.0762
+Avg. Processes in Disk Queue:     0.0090
+Avg. Turnaround Time:             0.0822 seconds
 ========================================
 Metrics Report λ: 3
 ========================================
-Throughput:                       2.9234 processes/unit time
-CPU Utilization:                  9.8745%
-Disk Utilization:                12.1729%
-Avg. Processes in Ready Queue:    0.1057
-Avg. Processes in Disk Queue:     0.0159
-Avg. Turnaround Time:             0.0847 seconds
+Throughput:                       2.9792 processes/unit time
+CPU Utilization:                  9.8398%
+Disk Utilization:                12.2196%
+Avg. Processes in Ready Queue:    0.1093
+Avg. Processes in Disk Queue:     0.0215
+Avg. Turnaround Time:             0.0846 seconds
 ========================================
 Metrics Report λ: 4
 ========================================
-Throughput:                       3.9949 processes/unit time
-CPU Utilization:                 13.1193%
-Disk Utilization:                16.6475%
-Avg. Processes in Ready Queue:    0.1603
-Avg. Processes in Disk Queue:     0.0353
-Avg. Turnaround Time:             0.0887 seconds
+Throughput:                       4.0160 processes/unit time
+CPU Utilization:                 13.4295%
+Disk Utilization:                16.3089%
+Avg. Processes in Ready Queue:    0.1553
+Avg. Processes in Disk Queue:     0.0287
+Avg. Turnaround Time:             0.0871 seconds
 ========================================
 Metrics Report λ: 5
 ========================================
-Throughput:                       5.0992 processes/unit time
-CPU Utilization:                 16.6907%
-Disk Utilization:                20.7204%
-Avg. Processes in Ready Queue:    0.1978
-Avg. Processes in Disk Queue:     0.0558
-Avg. Turnaround Time:             0.0916 seconds
+Throughput:                       4.9948 processes/unit time
+CPU Utilization:                 16.4289%
+Disk Utilization:                19.5399%
+Avg. Processes in Ready Queue:    0.1943
+Avg. Processes in Disk Queue:     0.0531
+Avg. Turnaround Time:             0.0891 seconds
 ========================================
 Metrics Report λ: 6
 ========================================
-Throughput:                       6.1209 processes/unit time
-CPU Utilization:                 20.5114%
-Disk Utilization:                23.9594%
-Avg. Processes in Ready Queue:    0.2738
-Avg. Processes in Disk Queue:     0.0864
-Avg. Turnaround Time:             0.0967 seconds
+Throughput:                       6.0053 processes/unit time
+CPU Utilization:                 19.7323%
+Disk Utilization:                23.2426%
+Avg. Processes in Ready Queue:    0.2353
+Avg. Processes in Disk Queue:     0.0915
+Avg. Turnaround Time:             0.0943 seconds
 ========================================
 Metrics Report λ: 7
 ========================================
-Throughput:                       6.9204 processes/unit time
-CPU Utilization:                 23.2024%
-Disk Utilization:                27.3967%
-Avg. Processes in Ready Queue:    0.3043
-Avg. Processes in Disk Queue:     0.1270
-Avg. Turnaround Time:             0.1008 seconds
+Throughput:                       6.9048 processes/unit time
+CPU Utilization:                 22.8245%
+Disk Utilization:                27.5192%
+Avg. Processes in Ready Queue:    0.2942
+Avg. Processes in Disk Queue:     0.1091
+Avg. Turnaround Time:             0.0994 seconds
 ========================================
 Metrics Report λ: 8
 ========================================
-Throughput:                       7.9476 processes/unit time
-CPU Utilization:                 26.2678%
-Disk Utilization:                31.7244%
-Avg. Processes in Ready Queue:    0.3529
-Avg. Processes in Disk Queue:     0.1727
-Avg. Turnaround Time:             0.1062 seconds
+Throughput:                       7.9489 processes/unit time
+CPU Utilization:                 26.0327%
+Disk Utilization:                30.4090%
+Avg. Processes in Ready Queue:    0.3708
+Avg. Processes in Disk Queue:     0.1706
+Avg. Turnaround Time:             0.1052 seconds
 ========================================
 Metrics Report λ: 9
 ========================================
-Throughput:                       8.9187 processes/unit time
-CPU Utilization:                 29.3545%
-Disk Utilization:                35.2315%
-Avg. Processes in Ready Queue:    0.4637
-Avg. Processes in Disk Queue:     0.2515
-Avg. Turnaround Time:             0.1152 seconds
+Throughput:                       9.2224 processes/unit time
+CPU Utilization:                 30.7482%
+Disk Utilization:                36.0334%
+Avg. Processes in Ready Queue:    0.4668
+Avg. Processes in Disk Queue:     0.2188
+Avg. Turnaround Time:             0.1123 seconds
 ========================================
 Metrics Report λ: 10
 ========================================
-Throughput:                       9.9417 processes/unit time
-CPU Utilization:                 33.6115%
-Disk Utilization:                40.3529%
-Avg. Processes in Ready Queue:    0.5185
-Avg. Processes in Disk Queue:     0.3243
-Avg. Turnaround Time:             0.1246 seconds
+Throughput:                       9.9900 processes/unit time
+CPU Utilization:                 33.5959%
+Disk Utilization:                40.1654%
+Avg. Processes in Ready Queue:    0.5257
+Avg. Processes in Disk Queue:     0.3118
+Avg. Turnaround Time:             0.1231 seconds
 ========================================
 Metrics Report λ: 11
 ========================================
-Throughput:                      11.0335 processes/unit time
-CPU Utilization:                 37.3210%
-Disk Utilization:                43.4073%
-Avg. Processes in Ready Queue:    0.6113
-Avg. Processes in Disk Queue:     0.3728
-Avg. Turnaround Time:             0.1273 seconds
+Throughput:                      11.0141 processes/unit time
+CPU Utilization:                 37.2560%
+Disk Utilization:                45.4393%
+Avg. Processes in Ready Queue:    0.6140
+Avg. Processes in Disk Queue:     0.4686
+Avg. Turnaround Time:             0.1380 seconds
 ========================================
 Metrics Report λ: 12
 ========================================
-Throughput:                      12.1746 processes/unit time
-CPU Utilization:                 40.0780%
-Disk Utilization:                47.5927%
-Avg. Processes in Ready Queue:    0.6775
-Avg. Processes in Disk Queue:     0.4564
-Avg. Turnaround Time:             0.1340 seconds
+Throughput:                      12.0008 processes/unit time
+CPU Utilization:                 40.6661%
+Disk Utilization:                49.4263%
+Avg. Processes in Ready Queue:    0.6868
+Avg. Processes in Disk Queue:     0.5458
+Avg. Turnaround Time:             0.1445 seconds
 ========================================
 Metrics Report λ: 13
 ========================================
-Throughput:                      12.8348 processes/unit time
-CPU Utilization:                 42.6642%
-Disk Utilization:                51.9480%
-Avg. Processes in Ready Queue:    0.7447
-Avg. Processes in Disk Queue:     0.6449
-Avg. Turnaround Time:             0.1489 seconds
+Throughput:                      13.2333 processes/unit time
+CPU Utilization:                 42.8728%
+Disk Utilization:                52.2567%
+Avg. Processes in Ready Queue:    0.7693
+Avg. Processes in Disk Queue:     0.5758
+Avg. Turnaround Time:             0.1416 seconds
 ========================================
 Metrics Report λ: 14
 ========================================
-Throughput:                      14.0378 processes/unit time
-CPU Utilization:                 46.5379%
-Disk Utilization:                57.8374%
-Avg. Processes in Ready Queue:    0.8914
-Avg. Processes in Disk Queue:     0.9963
-Avg. Turnaround Time:             0.1770 seconds
+Throughput:                      14.1073 processes/unit time
+CPU Utilization:                 46.3093%
+Disk Utilization:                55.5894%
+Avg. Processes in Ready Queue:    0.8915
+Avg. Processes in Disk Queue:     0.8236
+Avg. Turnaround Time:             0.1596 seconds
 ========================================
 Metrics Report λ: 15
 ========================================
-Throughput:                      15.0526 processes/unit time
-CPU Utilization:                 50.6241%
-Disk Utilization:                61.4865%
-Avg. Processes in Ready Queue:    1.0735
-Avg. Processes in Disk Queue:     1.1868
-Avg. Turnaround Time:             0.1905 seconds
+Throughput:                      15.0979 processes/unit time
+CPU Utilization:                 49.9425%
+Disk Utilization:                59.0431%
+Avg. Processes in Ready Queue:    1.0407
+Avg. Processes in Disk Queue:     1.0720
+Avg. Turnaround Time:             0.1772 seconds
 ========================================
 Metrics Report λ: 16
 ========================================
-Throughput:                      15.6962 processes/unit time
-CPU Utilization:                 52.0623%
-Disk Utilization:                65.8819%
-Avg. Processes in Ready Queue:    1.1226
-Avg. Processes in Disk Queue:     1.4282
-Avg. Turnaround Time:             0.2060 seconds
+Throughput:                      15.9918 processes/unit time
+CPU Utilization:                 52.8499%
+Disk Utilization:                63.5728%
+Avg. Processes in Ready Queue:    1.0956
+Avg. Processes in Disk Queue:     1.3216
+Avg. Turnaround Time:             0.1924 seconds
 ========================================
 Metrics Report λ: 17
 ========================================
-Throughput:                      16.8914 processes/unit time
-CPU Utilization:                 55.7090%
-Disk Utilization:                67.5879%
-Avg. Processes in Ready Queue:    1.2143
-Avg. Processes in Disk Queue:     1.5502
-Avg. Turnaround Time:             0.2041 seconds
+Throughput:                      16.9529 processes/unit time
+CPU Utilization:                 56.0178%
+Disk Utilization:                69.9894%
+Avg. Processes in Ready Queue:    1.2947
+Avg. Processes in Disk Queue:     1.9308
+Avg. Turnaround Time:             0.2336 seconds
 ========================================
 Metrics Report λ: 18
 ========================================
-Throughput:                      17.7168 processes/unit time
-CPU Utilization:                 58.9699%
-Disk Utilization:                73.7860%
-Avg. Processes in Ready Queue:    1.4976
-Avg. Processes in Disk Queue:     2.8730
-Avg. Turnaround Time:             0.2852 seconds
+Throughput:                      17.8846 processes/unit time
+CPU Utilization:                 59.7490%
+Disk Utilization:                72.8476%
+Avg. Processes in Ready Queue:    1.6278
+Avg. Processes in Disk Queue:     2.4037
+Avg. Turnaround Time:             0.2657 seconds
 ========================================
 Metrics Report λ: 19
 ========================================
-Throughput:                      19.2521 processes/unit time
-CPU Utilization:                 63.5856%
-Disk Utilization:                73.9709%
-Avg. Processes in Ready Queue:    1.9161
-Avg. Processes in Disk Queue:     2.8444
-Avg. Turnaround Time:             0.2811 seconds
+Throughput:                      19.0383 processes/unit time
+CPU Utilization:                 63.7764%
+Disk Utilization:                77.4848%
+Avg. Processes in Ready Queue:    1.8730
+Avg. Processes in Disk Queue:     2.8372
+Avg. Turnaround Time:             0.2902 seconds
 ========================================
 Metrics Report λ: 20
 ========================================
-Throughput:                      20.4220 processes/unit time
-CPU Utilization:                 68.1433%
-Disk Utilization:                81.0703%
-Avg. Processes in Ready Queue:    2.4301
-Avg. Processes in Disk Queue:     4.3827
-Avg. Turnaround Time:             0.3669 seconds
+Throughput:                      19.7823 processes/unit time
+CPU Utilization:                 66.5435%
+Disk Utilization:                77.9500%
+Avg. Processes in Ready Queue:    2.2529
+Avg. Processes in Disk Queue:     2.9550
+Avg. Turnaround Time:             0.3017 seconds
 ========================================
 Metrics Report λ: 21
 ========================================
-Throughput:                      20.8593 processes/unit time
-CPU Utilization:                 70.2287%
-Disk Utilization:                83.7010%
-Avg. Processes in Ready Queue:    2.8527
-Avg. Processes in Disk Queue:     5.3156
-Avg. Turnaround Time:             0.4278 seconds
+Throughput:                      20.3947 processes/unit time
+CPU Utilization:                 67.7114%
+Disk Utilization:                81.7940%
+Avg. Processes in Ready Queue:    2.2565
+Avg. Processes in Disk Queue:     5.1132
+Avg. Turnaround Time:             0.4050 seconds
 ========================================
 Metrics Report λ: 22
 ========================================
-Throughput:                      21.9278 processes/unit time
-CPU Utilization:                 73.0737%
-Disk Utilization:                87.7915%
-Avg. Processes in Ready Queue:    3.1263
-Avg. Processes in Disk Queue:    10.1479
-Avg. Turnaround Time:             0.6513 seconds
+Throughput:                      21.9781 processes/unit time
+CPU Utilization:                 72.7824%
+Disk Utilization:                89.8628%
+Avg. Processes in Ready Queue:    2.5915
+Avg. Processes in Disk Queue:     9.4611
+Avg. Turnaround Time:             0.5873 seconds
 ========================================
 Metrics Report λ: 23
 ========================================
-Throughput:                      22.8670 processes/unit time
-CPU Utilization:                 73.7171%
-Disk Utilization:                89.5229%
-Avg. Processes in Ready Queue:    2.8836
-Avg. Processes in Disk Queue:    12.5218
-Avg. Turnaround Time:             0.6900 seconds
+Throughput:                      23.2318 processes/unit time
+CPU Utilization:                 76.9374%
+Disk Utilization:                95.6588%
+Avg. Processes in Ready Queue:    4.1358
+Avg. Processes in Disk Queue:    20.5214
+Avg. Turnaround Time:             1.0897 seconds
 ========================================
 Metrics Report λ: 24
 ========================================
-Throughput:                      23.8719 processes/unit time
-CPU Utilization:                 79.6696%
-Disk Utilization:                96.9354%
-Avg. Processes in Ready Queue:    3.9921
-Avg. Processes in Disk Queue:    32.1399
-Avg. Turnaround Time:             1.5434 seconds
+Throughput:                      24.0413 processes/unit time
+CPU Utilization:                 79.1363%
+Disk Utilization:                98.2511%
+Avg. Processes in Ready Queue:    3.9085
+Avg. Processes in Disk Queue:    39.7779
+Avg. Turnaround Time:             1.8558 seconds
 ========================================
 Metrics Report λ: 25
 ========================================
-Throughput:                      24.6910 processes/unit time
-CPU Utilization:                 82.1971%
-Disk Utilization:                94.8944%
-Avg. Processes in Ready Queue:    4.9452
-Avg. Processes in Disk Queue:    33.0372
-Avg. Turnaround Time:             1.5630 seconds
+Throughput:                      25.0152 processes/unit time
+CPU Utilization:                 84.0675%
+Disk Utilization:                98.9640%
+Avg. Processes in Ready Queue:    5.3862
+Avg. Processes in Disk Queue:    97.4121
+Avg. Turnaround Time:             3.9213 seconds
 ========================================
 Metrics Report λ: 26
 ========================================
-Throughput:                      25.7558 processes/unit time
-CPU Utilization:                 86.7238%
-Disk Utilization:                99.8720%
-Avg. Processes in Ready Queue:    6.7884
-Avg. Processes in Disk Queue:   169.2632
-Avg. Turnaround Time:             6.3245 seconds
+Throughput:                      25.8588 processes/unit time
+CPU Utilization:                 85.7648%
+Disk Utilization:                99.4696%
+Avg. Processes in Ready Queue:    5.6616
+Avg. Processes in Disk Queue:    84.1800
+Avg. Turnaround Time:             3.4135 seconds
 ========================================
 Metrics Report λ: 27
 ========================================
-Throughput:                      26.5087 processes/unit time
-CPU Utilization:                 87.7501%
-Disk Utilization:                99.7311%
-Avg. Processes in Ready Queue:    9.0137
-Avg. Processes in Disk Queue:   116.9098
-Avg. Turnaround Time:             4.2596 seconds
+Throughput:                      26.1674 processes/unit time
+CPU Utilization:                 85.7233%
+Disk Utilization:                99.5237%
+Avg. Processes in Ready Queue:    7.7626
+Avg. Processes in Disk Queue:   106.1509
+Avg. Turnaround Time:             4.1909 seconds
 ========================================
 Metrics Report λ: 28
 ========================================
-Throughput:                      26.9632 processes/unit time
-CPU Utilization:                 88.6968%
-Disk Utilization:                99.9079%
-Avg. Processes in Ready Queue:    9.5266
-Avg. Processes in Disk Queue:   198.7124
-Avg. Turnaround Time:             6.9076 seconds
+Throughput:                      26.8535 processes/unit time
+CPU Utilization:                 89.5694%
+Disk Utilization:                99.8414%
+Avg. Processes in Ready Queue:    8.0588
+Avg. Processes in Disk Queue:   210.7341
+Avg. Turnaround Time:             7.2622 seconds
 ========================================
 Metrics Report λ: 29
 ========================================
-Throughput:                      27.3710 processes/unit time
-CPU Utilization:                 91.2187%
-Disk Utilization:                99.6548%
-Avg. Processes in Ready Queue:    9.4988
-Avg. Processes in Disk Queue:   252.8282
-Avg. Turnaround Time:             8.4579 seconds
+Throughput:                      27.4549 processes/unit time
+CPU Utilization:                 92.5047%
+Disk Utilization:                99.4659%
+Avg. Processes in Ready Queue:   10.8970
+Avg. Processes in Disk Queue:   250.6893
+Avg. Turnaround Time:             8.0218 seconds
 ========================================
 Metrics Report λ: 30
 ========================================
-Throughput:                      27.8223 processes/unit time
-CPU Utilization:                 93.7479%
-Disk Utilization:                99.1869%
-Avg. Processes in Ready Queue:   15.7962
-Avg. Processes in Disk Queue:   308.4847
-Avg. Turnaround Time:             9.4373 seconds
-========================================
-Metrics Report λ: 12.0
-========================================
-Throughput:                      12.0200 processes/unit time
-CPU Utilization:                 40.9864%
-Disk Utilization:                48.3840%
-Avg. Processes in Ready Queue:    0.7322
-Avg. Processes in Disk Queue:     0.5287
-Avg. Turnaround Time:             0.1428 seconds
-========================================
-Metrics Report λ: 12.0
-========================================
-Throughput:                      12.0291 processes/unit time
-CPU Utilization:                 39.4679%
-Disk Utilization:                44.3622%
-Avg. Processes in Ready Queue:    0.6487
-Avg. Processes in Disk Queue:     0.4035
-Avg. Turnaround Time:             0.1246 seconds
+Throughput:                      28.2650 processes/unit time
+CPU Utilization:                 94.1826%
+Disk Utilization:                99.8693%
+Avg. Processes in Ready Queue:   19.5086
+Avg. Processes in Disk Queue:   322.1769
+Avg. Turnaround Time:             9.4824 seconds
 ========================================
