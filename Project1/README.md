@@ -4,9 +4,21 @@
 
 ![Example Image](system.png)
 
+### Running the Simulator
+
+The simulation can be executed directly from the command line by providing specific arguments related to the simulation's configuration. Here are the steps to run the simulator:
+
+1. Open your terminal or command prompt.
+2. Navigate to the directory where the simulation scripts are located.
+3. Run the simulation using the following command format:
+
+```bash
+[...@eros Project1]$ python main.py <average_arrival_rate> <average_CPU_service_time> average_Disk_service_time>
+```
+
 ### The Workload
 
-Processes arrive at the CPU with an average arrival rate of λ (Lambda), following a Poisson distribution. If the CPU is idle, the process is processed immediately; otherwise, it joins the "Ready Queue". CPU service times are exponentially distributed, with an average service time of \(T_{s_{CPU}}\). A process exits with a 60% probability after CPU processing or moves to the Disk with a 40% probability for further service. Disk service times are also exponentially distributed, with an average service time of \(T_{s_{Disk}}\). Processes are served in a First-Come-First-Served (FCFS) order. See Figure 1 for an overview of the system components.
+Processes arrive at the CPU with an average arrival rate of λ (Lambda), following a Poisson distribution. If the CPU is idle, the process is processed immediately; otherwise, it joins the "Ready Queue". CPU service times are exponentially distributed, with an average service time of T_{s_{CPU}} . A process exits with a 60% probability after CPU processing or moves to the Disk with a 40% probability for further service. Disk service times are also exponentially distributed, with an average service time of  T_{s_{Disk}} . Processes are served in a First-Come-First-Served (FCFS) order. See Figure 1 for an overview of the system components.
 
 #### Performance Metrics
 
