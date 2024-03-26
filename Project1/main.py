@@ -7,14 +7,15 @@ all_metrics = []
 def plot_individual_metrics(dataframe):
    metrics = ["Lambda", "Throughput", "CPU Utilization", "Disk Utilization", "Avg. Processes in Ready Queue", "Avg. Processes in Disk Queue", "Avg. Turnaround Time"]
    for metric in metrics:
-      plt.figure(figsize=(10, 6))
-      plt.plot(dataframe["Lambda"], dataframe[metric], marker='o', color='b', label=metric)
-      plt.title(f"{metric} vs lambda")
-      plt.xlabel("lambda")
-      plt.ylabel(metric)
-      plt.grid()
-      plt.legend()
-      plt.savefig(f"Results/figs/{metric}_vs_lambda.png")
+      if metric != "Lambda":
+         plt.figure(figsize=(10, 6))
+         plt.plot(dataframe["Lambda"], dataframe[metric], marker='o', color='b', label=metric)
+         plt.title(f"{metric} vs lambda")
+         plt.xlabel("lambda")
+         plt.ylabel(metric)
+         plt.grid()
+         plt.legend()
+         plt.savefig(f"Results/figs/{metric}_vs_lambda.png")
 
 if __name__ == "__main__":
    # Check if the correct number of arguments are provided
