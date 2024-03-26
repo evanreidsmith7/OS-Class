@@ -2,8 +2,6 @@
 
 ## Overview
 
-This project requires a significant amount of work and time, so please start early. Late submissions will incur a penalty of 10% per day for up to 2 days, after which they will not be accepted. Please read the description carefully and consult with me (preferably early) if you have any questions. Collaboration on ideas with other students is permitted, but your code and report must be your own work.
-
 ![Example Image](system.png)
 
 ### The Workload
@@ -29,14 +27,4 @@ Events (e.g., process arrivals, completions) trigger state updates in the simula
 
 ## The Runs
 
-Vary the average arrival rate λ from 1 to 30 processes per second. For each λ value, plot the specified metrics. It is recommended to automate these experiments with a batch file for easier result analysis.
-
-## Submission Details
-
-Submit through Canvas, including your code, compilation and execution instructions, and a report with results and their interpretation. Your program should run on the CS Linux servers via the command line. Indicate clearly how to compile and run your simulator.
-
-**Grading:**
-
-- 30%: Correct design and data structures
-- 60%: Accurate results
-- 10%: Documentation
+Vary the average arrival rate λ from 1 to 30 processes per second. For each λ value, plot the specified metrics.

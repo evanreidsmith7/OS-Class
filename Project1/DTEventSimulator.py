@@ -230,15 +230,33 @@ class Simulator:
 
 ##############################################################report#
    def report(self, avg_turn_around_time, throughput, cpu_utilization, disk_utilization, avg_num_processes_in_readyQ, avg_num_processes_in_diskQ):
-      print(f"{'Metrics Report λ: ':}{self.average_arrival_rate:}")
-      print(f"{'='*40}")
-      print(f"{'Throughput:':<30}{throughput:>10.4f} processes/unit time")      
-      print(f"{'CPU Utilization:':<30}{cpu_utilization:>10.4f}%")
-      print(f"{'Disk Utilization:':<30}{disk_utilization:>10.4f}%")
-      print(f"{'Avg. Processes in Ready Queue:':<30}{avg_num_processes_in_readyQ:>10.4f}")
-      print(f"{'Avg. Processes in Disk Queue:':<30}{avg_num_processes_in_diskQ:>10.4f}")
-      print(f"{'Avg. Turnaround Time:':<30}{avg_turn_around_time:>10.4f} seconds")
-      print(f"{'='*40}")
+      report_lines = [
+         f"{'Metrics Report λ: ':}{self.average_arrival_rate:}",
+         f"{'='*40}",
+         f"{'Throughput:':<30}{throughput:>10.4f} processes/unit time",
+         f"{'CPU Utilization:':<30}{cpu_utilization:>10.4f}%",
+         f"{'Disk Utilization:':<30}{disk_utilization:>10.4f}%",
+         f"{'Avg. Processes in Ready Queue:':<30}{avg_num_processes_in_readyQ:>10.4f}",
+         f"{'Avg. Processes in Disk Queue:':<30}{avg_num_processes_in_diskQ:>10.4f}",
+         f"{'Avg. Turnaround Time:':<30}{avg_turn_around_time:>10.4f} seconds",
+         f"{'='*40}"
+      ]
+
+      # Print to console
+      for line in report_lines:
+         print(line)
+
+
+      # if lambda is 1, write to file and append to it if lambda is less than 31
+      if self.average_arrival_rate == 1:
+         with open('Results/simulation_report.txt', 'w', encoding='utf-8') as file:
+            for line in report_lines:
+               file.write(line + '\n')
+      elif self.average_arrival_rate < 31 and self.average_arrival_rate > 1:
+         with open('Results/simulation_report.txt', 'a', encoding='utf-8') as file:
+            for line in report_lines:
+               file.write(line + '\n')
+
 
       print('\n\n\n') if self.debug else None
       print(f"{'Compare to':^40}") if self.debug else None
