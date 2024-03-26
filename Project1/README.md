@@ -10,11 +10,29 @@ The simulation can be executed directly from the command line by providing speci
 
 1. Open your terminal or command prompt.
 2. Navigate to the directory where the simulation scripts are located.
-3. Run the simulation using the following command format:
+3. download get-pip script
 
-```bash
-[...@eros Project1]$ python main.py <average_arrival_rate> <average_CPU_service_time> average_Disk_service_time>
-```
+   ```bash
+   [user]$ curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+   ```
+
+4. run get-pip script
+
+   ```bash
+   [user]$ python get-pip.py
+   ```
+
+5. Install the required dependencies using the following command:
+
+   ```bash
+   [user]$ python -m pip install matplotlib pandas
+   ```
+
+6. Run the simulation using the following command format:
+
+   ```bash
+   [user]$ python main.py <average_arrival_rate> <average_CPU_service_time> average_Disk_service_time>
+   ```
 
 ### The Workload
 
