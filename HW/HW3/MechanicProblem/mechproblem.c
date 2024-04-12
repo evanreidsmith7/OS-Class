@@ -24,10 +24,10 @@ void *mechanic1(void *arg)
         printf("Mechanic 1 is repairing using tools A, B, and C\n");
         sleep(1); // Simulate time taken to repair the part
         printf("Mechanic 1 releasing tools\n");
-
-        sem_post(&toolC);
-        sem_post(&toolB);
+    
         sem_post(&toolA);
+        sem_post(&toolB);
+        sem_post(&toolC);
 
         printf("Mechanic 1 is taking a break\n");
         sleep(1); // Simulate break time
@@ -54,8 +54,8 @@ void *mechanic2(void *arg)
         sleep(1);
         printf("Mechanic 2 releasing tools\n");
 
-        sem_post(&toolC);
         sem_post(&toolA);
+        sem_post(&toolC);
 
         printf("Mechanic 2 is taking a break\n");
         sleep(1);
@@ -82,8 +82,8 @@ void *mechanic3(void *arg)
         sleep(1);
         printf("Mechanic 3 releasing tools\n");
 
-        sem_post(&toolC);
         sem_post(&toolB);
+        sem_post(&toolC);
 
         printf("Mechanic 3 is taking a break\n");
         sleep(1);
