@@ -1,0 +1,22 @@
+{
+   "version": "2.0.0",
+   "tasks": [
+     {
+       "label": "build your project",
+       "type": "shell",
+       "command": "g++",
+       "args": [
+         "thread_game.cpp",
+         "-o",
+         "thread_game",
+         "-g", // Add debug symbols
+         "-lpthread"
+       ],
+       "group": {
+         "kind": "build",
+         "isDefault": true
+       }
+     }
+   ]
+ }
+ 
