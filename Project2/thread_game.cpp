@@ -77,19 +77,36 @@ int main(int argc, char *argv[])
 
     // Initialize the deck
     initDeck();
+    // Initialize mutex and condition variables
+    pthread_mutex_init(&mutex, NULL);
+    pthread_cond_init(&turn_cond, NULL);
+    pthread_cond_init(&dealer_delt_cond, NULL);
 
     for (int i = 0; i < NUM_PLAYERS; i++)
     {
         //initialize player numbers to playerThread index value to correlate playerThreads[player number] to playerAccount.id
         playerAccounts[i].playerNum = i;
         //initialize player into the game by creating the player threads
-        //TODO: create player threads
+        pthread_create(&playerThreads[i], NULL, playerPlay, &playerAccounts[i]);
     }
+    for (int i = 0; i < NUM_PLAYERS; i++)
+    {
+        pthread_join(playerThreads[i], NULL);
+    }
+    //close file and destroy mutex and condition variables
+    fclose(logFile);
+    pthread_mutex_destroy(&mutex);
+    pthread_cond_destroy(&turn_cond);
+    pthread_cond_destroy(&dealer_delt_cond);
+
+    return 0;
 }
 
 void* player_thread(void* arg)
 {
-    
+    //player_account[playerNum].playerNum == playerAccount->playerNum
+    player_account* playerAccount = (player_account*)arg; //extract playerAccount from playerAccounts (array)
+
 }
 
 void initDeck()
