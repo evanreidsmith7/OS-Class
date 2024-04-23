@@ -8,12 +8,12 @@ who matches the target card wins the round.
 ************************************************************************************
 by Evan Smith
 ************************************************************************************/
-
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
+
 using namespace std;
 
 #define NUM_CARDS 52
@@ -31,6 +31,7 @@ void* playerPlay(void* arg);
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t turn_cond = PTHREAD_COND_INITIALIZER;
 pthread_cond_t dealer_delt_cond = PTHREAD_COND_INITIALIZER;
+//pthread_cond_t round_won_cond = PTHREAD_COND_INITIALIZER; maybe not needed
 //***************************************************************************************************
 //***************************************************************************************************
 //***************************************************************************************************
@@ -42,6 +43,7 @@ int deck[NUM_CARDS];   // Global deck
 int deckIndex = 0;     // Global current card index representing the current card selected from the deck
 int targetCard = 0;    // Global target card for the round
 bool roundWon = false; // Global flag to indicate if the round has been won
+bool dealerDelt = false; // Global flag to indicate if the dealer has delt the cards
 int currentPlayer = 0; // Global current player to take action
 //***************************************************************************************************
 //***************************************************************************************************
@@ -84,16 +86,16 @@ int main(int argc, char *argv[])
 
     for (int i = 0; i < NUM_PLAYERS; i++)
     {
-        //initialize player numbers to playerThread index value to correlate playerThreads[player number] to playerAccount.id
+        // initialize player numbers to playerThread index value to correlate playerThreads[player number] to playerAccount.id
         playerAccounts[i].playerNum = i;
-        //initialize player into the game by creating the player threads
+        // initialize player into the game by creating the player threads
         pthread_create(&playerThreads[i], NULL, playerPlay, &playerAccounts[i]);
     }
     for (int i = 0; i < NUM_PLAYERS; i++)
     {
         pthread_join(playerThreads[i], NULL);
     }
-    //close file and destroy mutex and condition variables
+    // close file and destroy mutex and condition variables
     fclose(logFile);
     pthread_mutex_destroy(&mutex);
     pthread_cond_destroy(&turn_cond);
@@ -102,11 +104,61 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void* player_thread(void* arg)
-{
-    //player_account[playerNum].playerNum == playerAccount->playerNum
-    player_account* playerAccount = (player_account*)arg; //extract playerAccount from playerAccounts (array)
+void* playerPlay(void* arg)
+{// player_account[playerNum].playerNum == playerAccount->playerNum
+    // extract playerAccount from playerAccounts (array)
+    player_account* playerAccount = (player_account*)arg;
 
+    // extract playerNum from playerAccount
+    int currentPlayerNum = playerAccount->playerNum;
+
+    for (int roundNumber = 0; roundNumber < NUM_PLAYERS; roundNumber++)
+    {
+        // wait for the dealer to deal cards or you are the dealer
+        pthread_mutex_lock(&mutex);
+
+        if (currentPlayerNum == roundNumber % NUM_PLAYERS) //
+        {
+            // you are the dealer. shuffle, draw target card, and deal 1 card to each player
+            shuffleDeck();
+            // set round won to false we are about to start a new round
+            roundWon = false;
+            // draw target card
+            targetCard = deck[deckIndex++];
+
+            fprintf(logFile, "----------------------------------------------------\n");
+            fprintf(logFile, "DEALER NUM: %d THE TARGET CARD: %d\n", currentPlayerNum + 1, targetCard);
+            printf("----------------------------------------------------\n");
+            printf("DEALER NUM: %d THE TARGET CARD: %d\n", currentPlayerNum + 1, targetCard);
+
+            // deal 1 card to each player
+            for (int i = 0; i < NUM_PLAYERS; i++)
+            {
+                playerAccounts[i].hand[0] = deck[deckIndex++]; // deal 1 card to player i and increment deck index
+                fprintf(logFile, "DEALER NUM: %d DEALS %d TO PLAYER NUM: %d\n", currentPlayerNum + 1, playerAccounts[i].hand[0], i + 1);
+                printf("DEALER NUM: %d DEALS %d TO PLAYER NUM: %d\n", currentPlayerNum + 1, playerAccounts[i].hand[0], i + 1);
+            }
+
+            // set the current player to the next player
+            currentPlayer = (currentPlayerNum + 1) % NUM_PLAYERS;
+            // set dealer delt to true
+            dealerDelt = true;
+            // signal the dealer has delt
+            pthread_cond_broadcast(&dealer_delt_cond);
+        }
+        else
+        {
+            // you are not the dealer wait for the dealer to deal
+            while (!dealerDelt)
+            {
+                pthread_cond_wait(&dealer_delt_cond, &mutex);
+            }
+            printf("PLAYER NUM: %d\n WAITED FOR DEALER", currentPlayerNum + 1);
+        }
+        // Dealer has delt now we can play the game
+        pthread_mutex_unlock(&mutex);
+        break;
+    }
 }
 
 void initDeck()
