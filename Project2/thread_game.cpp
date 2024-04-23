@@ -23,12 +23,30 @@ using namespace std;
 // function prototypes
 void initDeck();
 void shuffleDeck();
+void* playerPlay(void* arg);
 
+//***************************************************************************************************
+//MUTEX AND CONDITIONS*******************************************************************************
+//***************************************************************************************************
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t turn_cond = PTHREAD_COND_INITIALIZER;
+pthread_cond_t dealer_delt_cond = PTHREAD_COND_INITIALIZER;
+//***************************************************************************************************
+//***************************************************************************************************
+//***************************************************************************************************
+
+//***************************************************************************************************
+//SHARED REOURCES************************************************************************************
+//***************************************************************************************************
 int deck[NUM_CARDS];   // Global deck
 int deckIndex = 0;     // Global current card index representing the current card selected from the deck
 int targetCard = 0;    // Global target card for the round
 bool roundWon = false; // Global flag to indicate if the round has been won
 int currentPlayer = 0; // Global current player to take action
+//***************************************************************************************************
+//***************************************************************************************************
+//***************************************************************************************************
+
 
 // struct to represent a player that has an id and a hand of two cards
 typedef struct
@@ -38,7 +56,6 @@ typedef struct
 } player_account;
 
 player_account playerAccounts[NUM_PLAYERS]; // Array of player accounts
-pthread_t playerThreads[NUM_PLAYERS]; // Array of player threads
 
 FILE *logFile; // output file
 
@@ -47,6 +64,8 @@ int main(int argc, char *argv[])
     int seed = argc > 1 ? atoi(argv[1]) : time(NULL); // Seed for random number generator
     srand(seed);                                      // Seed the random number generator
     printf("Seed: %d\n", seed);
+    
+    pthread_t playerThreads[NUM_PLAYERS]; // Array of player threads
 
     // Open log file
     logFile = fopen("log.txt", "w");
@@ -66,7 +85,11 @@ int main(int argc, char *argv[])
         //initialize player into the game by creating the player threads
         //TODO: create player threads
     }
-    // assign player numbers and start player threads
+}
+
+void* player_thread(void* arg)
+{
+    
 }
 
 void initDeck()
