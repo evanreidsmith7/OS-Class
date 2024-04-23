@@ -21,6 +21,10 @@ using namespace std;
 #define NUM_PLAYERS 6
 #define NUM_ROUNDS 6
 
+//function prototypes
+void initDeck();
+void shuffleDeck();
+
 int deck[NUM_CARDS]; //Global deck
 int deckIndex = 0; //Global current card index representing the current card selected from the deck
 int targetCard = 0; //Global target card for the round
@@ -39,5 +43,21 @@ int main(int argc, char *argv[])
     int seed = argc > 1 ? atoi(argv[1]) : time(NULL); //Seed for random number generator
     srand(seed);  // Seed the random number generator
     printf("Seed: %d\n", seed);
+}
 
+void initDeck() {
+    for (int i = 0; i < NUM_CARDS; i++) {
+        deck[i] = i % 13 + 1;  // Cards from 1 to 13, simulating four suits
+    }
+    shuffleDeck();  // Initial shuffle
+}
+
+void shuffleDeck() {
+    for (int i = 0; i < NUM_CARDS; i++) {
+        int j = rand() % (i + 1); //randomly selects a card with a value between 0 and i
+        int temp = deck[i];
+        deck[i] = deck[j];
+        deck[j] = temp;
+    }
+    deckIndex = 0;  // Reset deck index after shuffle
 }
