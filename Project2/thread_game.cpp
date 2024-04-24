@@ -24,7 +24,8 @@ using namespace std;
 void initDeck();
 void shuffleDeck();
 void *playerPlay(void *arg);
-void handleDealerActions(int currentPlayerNum);
+void handleDealerTurn(int currentPlayerNum);
+void handlePlayerTurn(int currentPlayerNum);
 
 //***************************************************************************************************
 // MUTEX AND CONDITIONS*******************************************************************************
@@ -120,7 +121,7 @@ void *playerPlay(void *arg)
         if (currentPlayerNum == roundNumber % NUM_PLAYERS) //
         {
             // you are the dealer. shuffle, draw target card, and deal 1 card to each player
-            handleDealerActions(currentPlayerNum);
+            handleDealerTurn(currentPlayerNum);
         }
         else
         {
@@ -129,15 +130,38 @@ void *playerPlay(void *arg)
             {
                 pthread_cond_wait(&dealer_delt_cond, &mutex);
             }
-            printf("PLAYER NUM: %d\n WAITED FOR DEALER", currentPlayerNum + 1);
+            printf("PLAYER NUM: %d WAITED FOR DEALER", currentPlayerNum + 1);
         }
         // Dealer has delt now we can play the game
         pthread_mutex_unlock(&mutex);
-        break;
+
+        //lock the mutex to check if it is your turn
+        pthread_mutex_lock(&mutex);
+
+        if (currentPlayerNum == currentPlayer)
+        {
+            // it is your turn to play
+            handlePlayerTurn(currentPlayerNum);
+        }
+        else
+        {
+            // it is not your turn wait for your turn
+            while (currentPlayerNum != currentPlayer)
+            {
+                pthread_cond_wait(&turn_cond, &mutex);
+            }
+        }
+        // player has played unlock the mutex so other players can play (signal will be called by the player that just played)
+        pthread_mutex_unlock(&mutex);
     }
 }
 
-void handleDealerActions(int currentPlayerNum)
+void handlePlayerTurn(int currentPlayerNum)
+{
+
+}
+
+void handleDealerTurn(int currentPlayerNum)
 {
     shuffleDeck();
     // set round won to false we are about to start a new round
