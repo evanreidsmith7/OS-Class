@@ -20,13 +20,6 @@ using namespace std;
 #define NUM_PLAYERS 6
 #define NUM_ROUNDS 6
 
-// function prototypes
-void initDeck();
-void shuffleDeck();
-void *playerPlay(void *arg);
-void handleDealerTurn(int currentPlayerNum);
-void handlePlayerTurn(int currentPlayerNum);
-
 //***************************************************************************************************
 // MUTEX AND CONDITIONS*******************************************************************************
 //***************************************************************************************************
@@ -39,7 +32,7 @@ pthread_cond_t dealer_delt_cond;
 //***************************************************************************************************
 
 //***************************************************************************************************
-// SHARED REOURCES************************************************************************************
+// SHARED REOURCES***********************************************************************************
 //***************************************************************************************************
 int deck[NUM_CARDS];     // Global deck
 int deckIndex = 0;       // Global current card index representing the current card selected from the deck
@@ -62,6 +55,16 @@ player_account playerAccounts[NUM_PLAYERS]; // Array of player accounts
 
 FILE *logFile; // output file
 
+// function prototypes
+void initDeck();
+void shuffleDeck();
+void *playerPlay(void *arg);
+void handleDealerTurn(int currentPlayerNum);
+void handlePlayerTurn(player_account *playerAccount, int roundNum);
+
+//***************************************************************************************************
+// MAIN***********************************************************************************************
+//***************************************************************************************************
 int main(int argc, char *argv[])
 {
     int seed = argc > 1 ? atoi(argv[1]) : time(NULL); // Seed for random number generator
@@ -104,6 +107,9 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+//***************************************************************************************************
+//***************************************************************************************************
+//***************************************************************************************************
 
 void *playerPlay(void *arg)
 { // player_account[playerNum].playerNum == playerAccount->playerNum
@@ -135,13 +141,13 @@ void *playerPlay(void *arg)
         // Dealer has delt now we can play the game
         pthread_mutex_unlock(&mutex);
 
-        //lock the mutex to check if it is your turn
+        // lock the mutex to check if it is your turn
         pthread_mutex_lock(&mutex);
 
         if (currentPlayerNum == currentPlayer)
         {
             // it is your turn to play
-            handlePlayerTurn(currentPlayerNum);
+            handlePlayerTurn(playerAccount, roundNumber);
         }
         else
         {
@@ -156,9 +162,49 @@ void *playerPlay(void *arg)
     }
 }
 
-void handlePlayerTurn(int currentPlayerNum)
+void handlePlayerTurn(player_account *playerAccount, int roundNum)
 {
+    // get the current player number for ease
+    int currentPlayerNum = playerAccount->playerNum;
 
+    // check if round won
+    if (roundWon)
+    {
+        // you lost the round
+        printf("PLAYER %d: Lost round %d\n", currentPlayerNum + 1, roundNum + 1);
+        fprintf(logFile, "PLAYER %d: Lost round %d\n", currentPlayerNum + 1, roundNum + 1);
+    }
+    else
+    {
+        // draw a card
+        playerAccount->hand[1] = deck[deckIndex++];
+
+        fprintf(logFile, "PLAYER %d: drew %d\n", currentPlayerNum + 1, playerAccount->hand[1]);
+        fprintf(logFile, "PLAYER %d: <%d, %d>\n", currentPlayerNum + 1, playerAccount->hand[0], playerAccount->hand[1]);
+        printf("PLAYER %d: drew %d\n", currentPlayerNum + 1, playerAccount->hand[1]);
+        printf("PLAYER %d: <%d, %d>\n", currentPlayerNum + 1, playerAccount->hand[0], playerAccount->hand[1]);
+
+        // check if you won the round
+        if ((playerAccount->hand[0] == targetCard) || (playerAccount->hand[1] == targetCard))
+        {
+            // you won the round
+            printf("PLAYER %d: wins round %d with matching card %d\n", currentPlayerNum + 1, roundNum + 1, targetCard);
+            fprintf(logFile, "PLAYER %d: wins round %d with matching card %d\n", currentPlayerNum + 1, roundNum + 1, targetCard);
+
+            // set round won to true
+            roundWon = true;
+        }
+        else
+        {
+            // you did not win the round
+            int discard = rand() % 2;
+            printf("PLAYER %d: discards %d\n", currentPlayerNum + 1, playerAccount->hand[discard]);
+            fprintf(logFile, "PLAYER %d: discards %d\n", currentPlayerNum + 1, playerAccount->hand[discard]);
+        }
+        // your turn is over signal the next player to play
+        currentPlayer = (currentPlayer + 1) % NUM_PLAYERS;
+        pthread_cond_signal(&turn_cond);
+    }
 }
 
 void handleDealerTurn(int currentPlayerNum)
@@ -175,7 +221,7 @@ void handleDealerTurn(int currentPlayerNum)
     printf("DEALER NUM: %d THE TARGET CARD: %d\n", currentPlayerNum + 1, targetCard);
 
     // deal 1 card to each player
-    for (int i = 0; i < NUM_PLAYERS; i++)
+    for (int i = 0; i < NUM_PLAYERS; i++) // may need to change this to only deal out to the players that are playing and not all players*************************************************8
     {
         playerAccounts[i].hand[0] = deck[deckIndex++]; // deal 1 card to player i and increment deck index
         fprintf(logFile, "DEALER NUM: %d DEALS %d TO PLAYER NUM: %d\n", currentPlayerNum + 1, playerAccounts[i].hand[0], i + 1);
