@@ -121,33 +121,6 @@ void *playerPlay(void *arg)
         {
             // you are the dealer. shuffle, draw target card, and deal 1 card to each player
             handleDealerActions(currentPlayerNum);
-            /*
-            shuffleDeck();
-            // set round won to false we are about to start a new round
-            roundWon = false;
-            // draw target card
-            targetCard = deck[deckIndex++];
-
-            fprintf(logFile, "----------------------------------------------------\n");
-            fprintf(logFile, "DEALER NUM: %d THE TARGET CARD: %d\n", currentPlayerNum + 1, targetCard);
-            printf("----------------------------------------------------\n");
-            printf("DEALER NUM: %d THE TARGET CARD: %d\n", currentPlayerNum + 1, targetCard);
-
-            // deal 1 card to each player
-            for (int i = 0; i < NUM_PLAYERS; i++)
-            {
-                playerAccounts[i].hand[0] = deck[deckIndex++]; // deal 1 card to player i and increment deck index
-                fprintf(logFile, "DEALER NUM: %d DEALS %d TO PLAYER NUM: %d\n", currentPlayerNum + 1, playerAccounts[i].hand[0], i + 1);
-                printf("DEALER NUM: %d DEALS %d TO PLAYER NUM: %d\n", currentPlayerNum + 1, playerAccounts[i].hand[0], i + 1);
-            }
-
-            // set the current player to the next player
-            currentPlayer = (currentPlayerNum + 1) % NUM_PLAYERS;
-            // set dealer delt to true
-            dealerDelt = true;
-            // signal the dealer has delt
-            pthread_cond_broadcast(&dealer_delt_cond);
-            */
         }
         else
         {
