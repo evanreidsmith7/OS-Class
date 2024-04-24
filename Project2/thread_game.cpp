@@ -23,32 +23,31 @@ using namespace std;
 // function prototypes
 void initDeck();
 void shuffleDeck();
-void* playerPlay(void* arg);
+void *playerPlay(void *arg);
 
 //***************************************************************************************************
-//MUTEX AND CONDITIONS*******************************************************************************
+// MUTEX AND CONDITIONS*******************************************************************************
 //***************************************************************************************************
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t turn_cond = PTHREAD_COND_INITIALIZER;
 pthread_cond_t dealer_delt_cond = PTHREAD_COND_INITIALIZER;
-//pthread_cond_t round_won_cond = PTHREAD_COND_INITIALIZER; maybe not needed
+// pthread_cond_t round_won_cond = PTHREAD_COND_INITIALIZER; maybe not needed
 //***************************************************************************************************
 //***************************************************************************************************
 //***************************************************************************************************
 
 //***************************************************************************************************
-//SHARED REOURCES************************************************************************************
+// SHARED REOURCES************************************************************************************
 //***************************************************************************************************
-int deck[NUM_CARDS];   // Global deck
-int deckIndex = 0;     // Global current card index representing the current card selected from the deck
-int targetCard = 0;    // Global target card for the round
-bool roundWon = false; // Global flag to indicate if the round has been won
+int deck[NUM_CARDS];     // Global deck
+int deckIndex = 0;       // Global current card index representing the current card selected from the deck
+int targetCard = 0;      // Global target card for the round
+bool roundWon = false;   // Global flag to indicate if the round has been won
 bool dealerDelt = false; // Global flag to indicate if the dealer has delt the cards
-int currentPlayer = 0; // Global current player to take action
+int currentPlayer = 0;   // Global current player to take action
 //***************************************************************************************************
 //***************************************************************************************************
 //***************************************************************************************************
-
 
 // struct to represent a player that has an id and a hand of two cards
 typedef struct
@@ -66,7 +65,7 @@ int main(int argc, char *argv[])
     int seed = argc > 1 ? atoi(argv[1]) : time(NULL); // Seed for random number generator
     srand(seed);                                      // Seed the random number generator
     printf("Seed: %d\n", seed);
-    
+
     pthread_t playerThreads[NUM_PLAYERS]; // Array of player threads
 
     // Open log file
@@ -104,10 +103,10 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void* playerPlay(void* arg)
-{// player_account[playerNum].playerNum == playerAccount->playerNum
+void *playerPlay(void *arg)
+{ // player_account[playerNum].playerNum == playerAccount->playerNum
     // extract playerAccount from playerAccounts (array)
-    player_account* playerAccount = (player_account*)arg;
+    player_account *playerAccount = (player_account *)arg;
 
     // extract playerNum from playerAccount
     int currentPlayerNum = playerAccount->playerNum;
