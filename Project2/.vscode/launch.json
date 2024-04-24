@@ -6,7 +6,7 @@
        "type": "cppdbg",
        "request": "launch",
        "program": "${workspaceFolder}/thread_game",
-       "args": [],
+       "args": ["0"],
        "stopAtEntry": false,
        "cwd": "${workspaceFolder}",
        "environment": [],
