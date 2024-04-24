@@ -121,10 +121,10 @@ void *playerPlay(void *arg)
 
     for (int roundNumber = 0; roundNumber < NUM_PLAYERS; roundNumber++)
     {
-        // wait for the dealer to deal cards or you are the dealer
+        // check to see if dealerDelt to start round for the dealer to deal cards or you are the dealer
         pthread_mutex_lock(&mutex);
 
-        if (currentPlayerNum == roundNumber % NUM_PLAYERS) //
+        if ((currentPlayerNum == roundNumber % NUM_PLAYERS) && (dealerDelt == false)) //
         {
             // you are the dealer. shuffle, draw target card, and deal 1 card to each player
             handleDealerTurn(currentPlayerNum);
@@ -136,7 +136,6 @@ void *playerPlay(void *arg)
             {
                 pthread_cond_wait(&dealer_delt_cond, &mutex);
             }
-            printf("PLAYER NUM: %d WAITED FOR DEALER", currentPlayerNum + 1);
         }
         // Dealer has delt now we can play the game
         pthread_mutex_unlock(&mutex);
@@ -160,6 +159,7 @@ void *playerPlay(void *arg)
         // player has played unlock the mutex so other players can play (signal will be called by the player that just played)
         pthread_mutex_unlock(&mutex);
     }
+    return NULL;
 }
 
 void handlePlayerTurn(player_account *playerAccount, int roundNum)
@@ -203,6 +203,8 @@ void handlePlayerTurn(player_account *playerAccount, int roundNum)
         }
         // your turn is over signal the next player to play
         currentPlayer = (currentPlayer + 1) % NUM_PLAYERS;
+        // set dealer delt to false
+        dealerDelt = false;
         pthread_cond_signal(&turn_cond);
     }
 }
