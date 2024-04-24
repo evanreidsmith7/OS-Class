@@ -135,19 +135,35 @@ void *playerPlay(void *arg)
         {
             // handle the dealer turn
             handleDealerTurn(currentPlayerNum);
+            // signal the next player to play
+            
+            // set the current player to the next player
+            currentPlayer = (currentPlayerNum + 1) % NUM_PLAYERS;
+            // signal the next player to play
+            pthread_cond_broadcast(&turn_cond);
+            pthread_mutex_unlock(&mutex);
+            continue;
         }
 
         // check if the round has been won
         if (roundWon)
-        {
+        {            
             // you lost the round
             printf("PLAYER %d: Lost round %d\n", currentPlayerNum + 1, roundNumber + 1);
             fprintf(logFile, "PLAYER %d: Lost round %d\n", currentPlayerNum + 1, roundNumber + 1);
+            // set the current player to the next dealer
+            currentPlayer = (currentPlayerNum + 1) % NUM_PLAYERS;
+            // signal the next player to play
+            pthread_cond_broadcast(&turn_cond);
+            pthread_mutex_unlock(&mutex);
             continue; // go to the next round
         }
 
-        // it is your turn now
-        handlePlayerTurn(playerAccount, roundNumber);
+        // it is your turn now if ur not the dealer
+        if (currentPlayerNum != roundNumber % NUM_PLAYERS)
+        {
+            handlePlayerTurn(playerAccount, roundNumber);
+        }
         // set the current player to the next player
         currentPlayer = (currentPlayerNum + 1) % NUM_PLAYERS;
         // signal the next player to play
@@ -166,7 +182,7 @@ void handlePlayerTurn(player_account *playerAccount, int roundNum)
     if (roundWon)
     {
         // you lost the round
-        printf("PLAYER %d: Lost round %d\n", currentPlayerNum + 1, roundNum + 1);
+        printf("PLAYER %d: Lost asdfasdfround %d\n", currentPlayerNum + 1, roundNum + 1);
         fprintf(logFile, "PLAYER %d: Lost round %d\n", currentPlayerNum + 1, roundNum + 1);
     }
     else
