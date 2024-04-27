@@ -35,9 +35,9 @@ pthread_cond_t turn_cond;
 int deck[NUM_CARDS];     // Global deck
 int deckIndex = 0;       // Global current card index representing the current card selected from the deck
 int targetCard = 0;      // Global target card for the round
-bool roundOver = false;   // Global flag to indicate if the round has been won
+bool roundOver = false;  // Global flag to indicate if the round has been won
 bool dealerDelt = false; // Global flag to indicate if the dealer has delt the cards
-int roundNum = 0;   // Global current round number
+int roundNum = 0;        // Global current round number
 //***************************************************************************************************
 //***************************************************************************************************
 //***************************************************************************************************
@@ -61,6 +61,8 @@ void *playerPlay(void *arg);
 void *dealerDeal(void *arg);
 void handleDealerTurn(int currentPlayerNum);
 void handlePlayerTurn(player_account *playerAccount, int roundNum);
+void printDeck(int deck[], int size);
+void shiftDeckLeftAndAddDiscard(int discardedCard);
 
 //***************************************************************************************************
 // MAIN***********************************************************************************************
@@ -92,7 +94,7 @@ int main(int argc, char *argv[])
         // initialize player numbers to playerThread index value to correlate playerThreads[player number] to playerAccount.id
         playerAccounts[i].playerNum = i;
     }
-    
+
     for (int round = 0; round < NUM_ROUNDS; round++)
     {
         // set the round number
@@ -158,9 +160,9 @@ void *playerPlay(void *arg)
     playerAccount->hand[1] = deck[deckIndex++];
 
     fprintf(logFile, "PLAYER %d: drew %d\n", currentPlayerNum + 1, playerAccount->hand[1]);
-    fprintf(logFile, "PLAYER %d: <%d, %d>\n", currentPlayerNum + 1, playerAccount->hand[0], playerAccount->hand[1]);
+    fprintf(logFile, "PLAYER %d HAND: <%d, %d>\n", currentPlayerNum + 1, playerAccount->hand[0], playerAccount->hand[1]);
     printf("PLAYER %d: drew %d\n", currentPlayerNum + 1, playerAccount->hand[1]);
-    printf("PLAYER %d: <%d, %d>\n", currentPlayerNum + 1, playerAccount->hand[0], playerAccount->hand[1]);
+    printf("PLAYER %d HAND: <%d, %d>\n", currentPlayerNum + 1, playerAccount->hand[0], playerAccount->hand[1]);
 
     // check if you won the round
     if ((playerAccount->hand[0] == targetCard) || (playerAccount->hand[1] == targetCard))
@@ -179,6 +181,22 @@ void *playerPlay(void *arg)
         int discard = rand() % 2;
         printf("PLAYER %d: discards %d\n", currentPlayerNum + 1, playerAccount->hand[discard]);
         fprintf(logFile, "PLAYER %d: discards %d\n", currentPlayerNum + 1, playerAccount->hand[discard]);
+
+        // shift the deck left and add the discarded card to the end
+        shiftDeckLeftAndAddDiscard(playerAccount->hand[discard]);
+
+        if (discard == 0)
+        {
+
+            fprintf(logFile, "PLAYER %d HAND: <%d>\n", currentPlayerNum + 1, playerAccount->hand[1]);
+        }
+        else
+        {
+            fprintf(logFile, "PLAYER %d HAND: <%d>\n", currentPlayerNum + 1, playerAccount->hand[0]);
+        }
+
+        // print the current deck
+        printDeck(deck, NUM_CARDS);
     }
 
     // unlock the mutex
@@ -221,12 +239,38 @@ void *dealerDeal(void *arg)
 
     return NULL;
 }
+// Function to shift deck contents left and add discarded card to the end
+void shiftDeckLeftAndAddDiscard(int discardedCard)
+{
+    // Shift all cards left by one position
+    for (int i = 1; i < NUM_CARDS; ++i)
+    {
+        deck[i - 1] = deck[i];
+    }
+    // Add the discarded card to the end of the deck
+    deck[NUM_CARDS - 1] = discardedCard;
+
+    // adjust the deck index
+    deckIndex--;
+}
+
+// Function to print the deck
+void printDeck(int deck[], int size)
+{
+    printf("Deck: ");
+    for (int i = deckIndex; i < size; ++i)
+    {
+        printf("%d ", deck[i]);
+        fprintf(logFile, "%d ", deck[i]);
+    }
+    fprintf(logFile, "\n");
+    printf("\n");
+}
 
 void handlePlayerTurn(player_account *playerAccount, int roundNum)
 {
     // get the current player number for ease
     int currentPlayerNum = playerAccount->playerNum;
-
 }
 
 void handleDealerTurn(int currentPlayerNum)
