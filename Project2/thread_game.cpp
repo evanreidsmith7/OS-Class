@@ -67,6 +67,7 @@ void handlePlayerTurn(player_account *playerAccount, int roundNum);
 //***************************************************************************************************
 int main(int argc, char *argv[])
 {
+    pthread_attr_t attr; // Set of thread attributes
     int seed = argc > 1 ? atoi(argv[1]) : time(NULL); // Seed for random number generator
     srand(seed);                                      // Seed the random number generator
     printf("Seed: %d\n", seed);
@@ -83,6 +84,9 @@ int main(int argc, char *argv[])
 
     // Initialize the deck
     initDeck();
+    // Initialize attr
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
     // Initialize mutex and condition variables
     pthread_mutex_init(&mutex, NULL);
     pthread_cond_init(&turn_cond, NULL);
@@ -93,8 +97,11 @@ int main(int argc, char *argv[])
         // initialize player numbers to playerThread index value to correlate playerThreads[player number] to playerAccount.id
         playerAccounts[i].playerNum = i;
         // initialize player into the game by creating the player threads
-        pthread_create(&playerThreads[i], NULL, playerPlay, &playerAccounts[i]);
+        pthread_create(&playerThreads[i], &attr, playerPlay, &playerAccounts[i]);
     }
+    
+    pthread_attr_destroy(&attr);
+    
     for (int i = 0; i < NUM_PLAYERS; i++)
     {
         pthread_join(playerThreads[i], NULL);
