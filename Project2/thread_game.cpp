@@ -126,14 +126,14 @@ int main(int argc, char *argv[])
         {
             if ((playerAccounts[i].iWon == false) && (i != round))
             {
-                printf("PLAYER %d: lost round %d\n", i + 1, round + 1);
+                //printf("PLAYER %d: lost round %d\n", i + 1, round + 1);
                 fprintf(logFile, "PLAYER %d: lost round %d\n", i + 1, round + 1);
             }
 
             // reset the iWon flag for the next round
             playerAccounts[i].iWon = false;
         }
-        printf("DEALER NUM %d: Round Ends \n", round + 1);
+        //printf("DEALER NUM %d: Round Ends \n", round + 1);
     }
     fclose(logFile);
     pthread_mutex_destroy(&mutex);
@@ -161,7 +161,7 @@ void *playerPlay(void *arg)
 
     fprintf(logFile, "PLAYER %d: drew %d\n", currentPlayerNum + 1, playerAccount->hand[1]);
     fprintf(logFile, "PLAYER %d HAND: <%d, %d>\n", currentPlayerNum + 1, playerAccount->hand[0], playerAccount->hand[1]);
-    printf("PLAYER %d: drew %d\n", currentPlayerNum + 1, playerAccount->hand[1]);
+    //printf("PLAYER %d: drew %d\n", currentPlayerNum + 1, playerAccount->hand[1]);
     printf("PLAYER %d HAND: <%d, %d>\n", currentPlayerNum + 1, playerAccount->hand[0], playerAccount->hand[1]);
 
     // check if you won the round
@@ -178,8 +178,10 @@ void *playerPlay(void *arg)
     else
     {
         // you did not win the round
+        printf("PLAYER %d: loses round %d\n", currentPlayerNum + 1, roundNum + 1);
+
         int discard = rand() % 2;
-        printf("PLAYER %d: discards %d\n", currentPlayerNum + 1, playerAccount->hand[discard]);
+        //printf("PLAYER %d: discards %d\n", currentPlayerNum + 1, playerAccount->hand[discard]);
         fprintf(logFile, "PLAYER %d: discards %d\n", currentPlayerNum + 1, playerAccount->hand[discard]);
 
         // shift the deck left and add the discarded card to the end
