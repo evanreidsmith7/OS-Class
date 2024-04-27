@@ -119,7 +119,7 @@ void *playerPlay(void *arg)
     // extract playerNum from playerAccount
     int currentPlayerNum = playerAccount->playerNum;
 
-    for (int roundNumber = 0; roundNumber < NUM_PLAYERS; roundNumber++)
+    for (int roundNumber = 0; roundNumber < NUM_ROUNDS; roundNumber++)
     {
         // check to see if dealerDelt to start round for the dealer to deal cards or you are the dealer
         pthread_mutex_lock(&mutex);
@@ -136,7 +136,7 @@ void *playerPlay(void *arg)
             // handle the dealer turn
             handleDealerTurn(currentPlayerNum);
             // signal the next player to play
-            
+
             // set the current player to the next player
             currentPlayer = (currentPlayerNum + 1) % NUM_PLAYERS;
             // signal the next player to play
@@ -147,7 +147,7 @@ void *playerPlay(void *arg)
 
         // check if the round has been won
         if (roundWon)
-        {            
+        {
             // you lost the round
             printf("PLAYER %d: Lost round %d\n", currentPlayerNum + 1, roundNumber + 1);
             fprintf(logFile, "PLAYER %d: Lost round %d\n", currentPlayerNum + 1, roundNumber + 1);
@@ -166,6 +166,16 @@ void *playerPlay(void *arg)
         }
         // set the current player to the next player
         currentPlayer = (currentPlayerNum + 1) % NUM_PLAYERS;
+
+        // Inside playerPlay function, at the end of the round loop
+        if (roundNumber == NUM_ROUNDS - 1)
+        {
+            // Check if the currentPlayer is set correctly
+            // Ensure that all players get to act in the final round
+            // Consider adding logs here to debug the flow
+            printf("Final round processing for player %d\n", currentPlayerNum+1);
+        }
+
         // signal the next player to play
         pthread_cond_broadcast(&turn_cond);
         pthread_mutex_unlock(&mutex);
