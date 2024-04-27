@@ -1,23 +1,112 @@
-\documentclass[12pt]{article}
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{verbatim}
+\usepackage{listings}
 
-\usepackage{graphicx} % Required for including images
-\usepackage{booktabs} % For professional looking tables
-\usepackage[margin=1in]{geometry} % Set margins
-\usepackage{hyperref} % For hyperlinks
-\usepackage{float} % For image placement
+% Setup listings package to handle text files properly
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true, % Automatic line breaking
+    breakatwhitespace=false, % Break lines not only at whitespaces
+    frame=single, % Frame around the code
+    numbers=left, % Line numbers on the left
+    numberstyle=\tiny,
+    showstringspaces=false % Don't show spaces as special characters
+}
 
-
-\title{Synchronization and Deadlocks\\
-        Project 2 Report\\}
-\author{Evan Smtih\\
-        CS4328 Operating Systems\\
-        Mina Guirguis, Ph.D.\\}
-\date{\today}
+\title{Project Report on Matching Game Thread Synchronization Simulation}
+\author{}
+\date{}
 
 \begin{document}
 
 \maketitle
 
-\section{Abstract}
+\section*{Overview of Design and Implementation}
+
+\subsection*{Project Description}
+\textit{MatchingCards} is a card game simulation where each of six players attempts to match a target card set by a dealer, who is also a player. The game spans six rounds, with each player taking turns as the dealer. The simulation uses POSIX threads to represent players, with each thread handling the actions of one player per round.
+
+\subsection*{Technical Details}
+\begin{itemize}
+    \item \textbf{Programming Language:} C/C++
+    \item \textbf{Concurrency:} Utilizes POSIX threads for simultaneous execution of player actions.
+    \item \textbf{Synchronization:} Employs mutexes and condition variables to manage access to shared resources like the card deck and ensure orderly play.
+    \item \textbf{Data Structures:} Includes arrays for player accounts and the deck of cards, and a structure to store player details.
+\end{itemize}
+
+\subsection*{Game Flow}
+\begin{enumerate}
+    \item Initialize the deck of cards.
+    \item For each round:
+    \begin{itemize}
+        \item One player acts as the dealer, shuffles the deck, and distributes cards.
+        \item Players sequentially attempt to match their hand with the target card.
+        \item Players log actions to a file, detailing every card drawn, discarded, or compared.
+    \end{itemize}
+\end{enumerate}
+
+\section*{Results from 5 Independent Runs}
+The program was executed with different random seeds, producing varied outcomes for each game simulation. Output files are found at the end of this report. Key observations from each trial are summarized below:
+\begin{itemize}
+    \item \textbf{Trial 1:} Players displayed diverse strategies, with players 2 and 6 frequently winning rounds. The dynamics changed with each dealer rotation, demonstrating the randomness and effectiveness of the shuffling and dealing methods.
+    \begin{itemize}
+        \item \textit{Key Outcome:} Player 6 wins two consecutive rounds.
+    \end{itemize}
+    \item \textbf{Trial 2:} This trial showcased the functionality of the discard and draw mechanisms, with several rounds extending due to no immediate matches.
+    \begin{itemize}
+        \item \textit{Key Outcome:} Player 3 managed to win two rounds by effectively drawing and matching the target card.
+    \end{itemize}
+    \item \textbf{Trial 3:} Displayed robust error handling and synchronization, with no deadlocks or race conditions despite rapid state changes in game variables.
+    \begin{itemize}
+        \item \textit{Key Outcome:} Dealer changes led to interesting shifts in game dynamics, illustrating the role of the dealer in influencing game outcomes.
+    \end{itemize}
+    \item \textbf{Trial 4:} The log files from this run provided clear insights into the sequence of actions, validating the logging mechanism's effectiveness in tracking game progress.
+    \begin{itemize}
+        \item \textit{Key Outcome:} Consistent logging format helped in debugging and understanding player behaviors during each round.
+    \end{itemize}
+    \item \textbf{Trial 5:} Tested the system's performance under different seed values, confirming the system's stability and the random number generator's effectiveness in ensuring fair play.
+    \begin{itemize}
+        \item \textit{Key Outcome:} Varied winners and game scenarios emphasized the unpredictability and fairness of the game setup.
+    \end{itemize}
+\end{itemize}
+
+\section*{Compilation and Execution Instructions}
+
+\textbf{To compile the program:}
+Navigate to the Project2 directory and run the following command:
+\begin{verbatim}
+g++ -o thread_game thread_game.cpp -lpthread
+\end{verbatim}
+or use the makefile provided.
+\begin{verbatim}
+make
+\end{verbatim}
+
+\textbf{To run the game:}
+\begin{verbatim}
+./thread_game [seed_value]
+\end{verbatim}
+Replace $\texttt{[seed\_value]}$ with an integer to use as the seed for random number generation. If omitted, the current system time is used as the seed.
+
+\section*{Conclusion}
+The \textit{MatchingCards} simulation effectively demonstrates multi-threading, synchronization, and resource sharing in a competitive game environment. The implementation adheres to the project requirements, providing a robust platform for further enhancements like GUI integration or network play. The detailed logs and varied outcomes across different trials underscore the simulation’s capability to handle dynamic, real-time decision-making and concurrency.
+
+\section*{Trials}
+\subsection*{Results of Trial 1}
+\lstinputlisting{trials/trial1.txt}
+
+\subsection*{Results of Trial 2}
+\lstinputlisting{trials/trial2.txt}
+
+\subsection*{Results of Trial 3}
+\lstinputlisting{trials/trial3.txt}
+
+\subsection*{Results of Trial 4}
+\lstinputlisting{trials/trial4.txt}
+
+\subsection*{Results of Trial 5}
+\lstinputlisting{trials/trial5.txt}
 
 \end{document}

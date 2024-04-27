@@ -5,7 +5,7 @@ LDFLAGS =
 LDLIBS = -lpthread
 
 # Define the executable file
-TARGET = thread_game.exe
+TARGET = thread_game
 
 # Define source files
 SOURCES = thread_game.cpp
