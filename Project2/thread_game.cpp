@@ -37,7 +37,7 @@ int deckIndex = 0;       // Global current card index representing the current c
 int targetCard = 0;      // Global target card for the round
 bool roundOver = false;   // Global flag to indicate if the round has been won
 bool dealerDelt = false; // Global flag to indicate if the dealer has delt the cards
-int currentPlayer = 0;   // Global current player to take action
+int roundNum = 0;   // Global current round number
 //***************************************************************************************************
 //***************************************************************************************************
 //***************************************************************************************************
@@ -47,6 +47,7 @@ typedef struct
 {
     int playerNum;
     int hand[2]; // hands consist of two cards
+    bool iWon = false;
 } player_account;
 
 player_account playerAccounts[NUM_PLAYERS]; // Array of player accounts
@@ -94,19 +95,20 @@ int main(int argc, char *argv[])
     
     for (int round = 0; round < NUM_ROUNDS; round++)
     {
-        printf("Round %d\n", round);
+        // set the round number
+        roundNum = round;
         // always start with the dealer
-        pthread_create(&playerThreads[round], NULL, playerPlay, (void *)&playerAccounts[round]);
+        pthread_create(&playerThreads[round], NULL, dealerDeal, (void *)&playerAccounts[round]);
         // wait for the dealer to finish
         pthread_join(playerThreads[round], NULL);
 
         // let the rest of the players take their turn one at a time
-        for (int i = 0; i < NUM_PLAYERS; i++)
+        for (int player = 0; player < NUM_PLAYERS; player++)
         {
-            // start the thread for the player if it is not the dealer
-            if (i != round)
+            // start the thread for the player if it is not the dealer and the round is not over
+            if (player != round && !roundOver)
             {
-                pthread_create(&playerThreads[i], NULL, playerPlay, (void *)&playerAccounts[i]);
+                pthread_create(&playerThreads[player], NULL, playerPlay, (void *)&playerAccounts[player]);
             }
             else
             {
@@ -114,9 +116,22 @@ int main(int argc, char *argv[])
                 continue;
             }
             // wait for the player to finish
-            pthread_join(playerThreads[i], NULL);
+            pthread_join(playerThreads[player], NULL);
         }
-        printf("Round %d over\n\n\n", round);
+
+        // print the losers of the round
+        for (int i = 0; i < NUM_PLAYERS; i++)
+        {
+            if ((playerAccounts[i].iWon == false) && (i != round))
+            {
+                printf("PLAYER %d: lost round %d\n", i + 1, round + 1);
+                fprintf(logFile, "PLAYER %d: lost round %d\n", i + 1, round + 1);
+            }
+
+            // reset the iWon flag for the next round
+            playerAccounts[i].iWon = false;
+        }
+        printf("DEALER NUM %d: Round Ends \n", round + 1);
     }
     fclose(logFile);
     pthread_mutex_destroy(&mutex);
@@ -136,7 +151,38 @@ void *playerPlay(void *arg)
     // extract playerNum from playerAccount
     int currentPlayerNum = playerAccount->playerNum;
 
-    printf("Player %d is playing\n", currentPlayerNum);
+    // lock the mutex
+    pthread_mutex_lock(&mutex);
+
+    // draw a card
+    playerAccount->hand[1] = deck[deckIndex++];
+
+    fprintf(logFile, "PLAYER %d: drew %d\n", currentPlayerNum + 1, playerAccount->hand[1]);
+    fprintf(logFile, "PLAYER %d: <%d, %d>\n", currentPlayerNum + 1, playerAccount->hand[0], playerAccount->hand[1]);
+    printf("PLAYER %d: drew %d\n", currentPlayerNum + 1, playerAccount->hand[1]);
+    printf("PLAYER %d: <%d, %d>\n", currentPlayerNum + 1, playerAccount->hand[0], playerAccount->hand[1]);
+
+    // check if you won the round
+    if ((playerAccount->hand[0] == targetCard) || (playerAccount->hand[1] == targetCard))
+    {
+        // you won the round
+        playerAccount->iWon = true;
+
+        printf("PLAYER %d: wins round %d with matching card %d\n", currentPlayerNum + 1, roundNum + 1, targetCard);
+        fprintf(logFile, "PLAYER %d: wins round %d with matching card %d\n", currentPlayerNum + 1, roundNum + 1, targetCard);
+        // set round won to true
+        roundOver = true;
+    }
+    else
+    {
+        // you did not win the round
+        int discard = rand() % 2;
+        printf("PLAYER %d: discards %d\n", currentPlayerNum + 1, playerAccount->hand[discard]);
+        fprintf(logFile, "PLAYER %d: discards %d\n", currentPlayerNum + 1, playerAccount->hand[discard]);
+    }
+
+    // unlock the mutex
+    pthread_mutex_unlock(&mutex);
 
     return NULL;
 }
@@ -148,7 +194,30 @@ void *dealerDeal(void *arg)
     // extract playerNum from playerAccount
     int currentPlayerNum = playerAccount->playerNum;
 
-    printf("Dealer is player %d\n", currentPlayerNum);
+    // lock the mutex
+    pthread_mutex_lock(&mutex);
+    // set round won to false we are about to start a new round
+    roundOver = false;
+    // shuffle the deck
+    shuffleDeck();
+    // draw target card
+    targetCard = deck[deckIndex++];
+
+    fprintf(logFile, "----------------------------------------------------\n");
+    fprintf(logFile, "DEALER NUM: %d THE TARGET CARD: %d\n", currentPlayerNum + 1, targetCard);
+    printf("----------------------------------------------------\n");
+    printf("DEALER NUM: %d THE TARGET CARD: %d\n", currentPlayerNum + 1, targetCard);
+
+    // deal 1 card to each player
+    for (int i = 0; i < NUM_PLAYERS; i++) // may need to change this to only deal out to the players that are playing and not all players*************************************************8
+    {
+        playerAccounts[i].hand[0] = deck[deckIndex++]; // deal 1 card to player i and increment deck index
+        fprintf(logFile, "DEALER NUM: %d DEALS %d TO PLAYER NUM: %d\n", currentPlayerNum + 1, playerAccounts[i].hand[0], i + 1);
+        printf("DEALER NUM: %d DEALS %d TO PLAYER NUM: %d\n", currentPlayerNum + 1, playerAccounts[i].hand[0], i + 1);
+    }
+
+    // unlock the mutex
+    pthread_mutex_unlock(&mutex);
 
     return NULL;
 }
