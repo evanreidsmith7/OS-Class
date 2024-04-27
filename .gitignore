@@ -5,5 +5,5 @@ HW/Reference/
 Project2/Resources/
 
 Project2/log.txt
-Project2/*.exe
-Project2/*.o
+Project2/thread_game.exe
+Project2/thread_game.o
