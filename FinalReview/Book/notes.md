@@ -73,9 +73,3 @@
 
 - Overview of Mass-Storage Structure
 - Disk Scheduling
-
-## Virtual Machines and Cloud Computing (Chapter 18, Sections 18 - 18.3
-
-- Overview
-- History
-- Benefits and Features
